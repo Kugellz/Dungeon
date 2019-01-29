@@ -12,69 +12,27 @@ class SceneA extends Phaser.Scene {
     this.matter.world.setBounds(0, 0, 800, 600);
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
-    this.createPlayer();
-    this.createMace(this.player);
+    this.player = new Player(this,300,400);
     this.cursors = this.input.keyboard.createCursorKeys();
-  }
-  createPlayer(){
-    this.player = this.matter.add.sprite(400,300,'knight',null, { shape: 'circle',radius:10});
-    this.player.setScale(2);
-    this.player.setFixedRotation();
-    this.player.setAngle(0);
-    this.player.XVEL = 0;
-    this.player.YVEL = 0;
-    this.player.maxSpeed = 10;
-    this.player.setCollisionCategory(this.playerColCat)
-  }
-  createMace(player){
-    //player.mace = this.matter.add.sprite(410,300,'ball');
-    //player.mace.setScale(2);
-    //player.mace.setFriction(0);
-    //this.matter.add.spring(player, player.mace, 60, 0);
-    var y = 300;
-    var prev = player;
-    for (var i = 0; i < 6; i++)
-    {
-        var ball = this.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.1 });
-        ball.setCollisionCategory(this.maceColCat);
-
-        this.matter.add.joint(prev, ball, 25, 0.4);
-        if (i === 6) {
-          ball.setMass(1);
-        }
-
-        prev = ball;
-
-        y += 6;
-    }
-
-
+    this.anims.create({
+        key: 'idle',
+        frames: this.anims.generateFrameNumbers('knight', { start: 0, end: 2 }),
+        frameRate: 5,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'walk',
+        frames: this.anims.generateFrameNumbers('knight', { start: 3, end: 6 }),
+        frameRate: 8,
+        repeat: -1
+    });
   }
   update(){
-    if (this.cursors.left.isDown)
-    {
-        this.player.XVEL =-2;
-    }
-    else if (this.cursors.right.isDown)
-    {
-        this.player.XVEL = 2;
-    } else {
-      this.player.XVEL =0;
-    }
-
-    if (this.cursors.up.isDown)
-    {
-        this.player.YVEL =-2;
-    }
-    else if (this.cursors.down.isDown)
-    {
-        this.player.YVEL =2;
-    } else {
-      this.player.YVEL =0;
-    }
-    let vector = (new Phaser.Math.Vector2(this.player.XVEL,this.player.YVEL)).normalize();
-    this.player.setVelocity(vector.x*2,vector.y*2);
+    this.player.update();
   }
+
+
+
 }
 
 
@@ -82,7 +40,7 @@ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    backgroundColor: '#1b1464',
+    backgroundColor: '#256413',
     parent: 'phaser-example',
     pixelArt: true,
     physics: {
@@ -91,7 +49,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: true
+        debug: false
       }
     },
     scene: [SceneA]
