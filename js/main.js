@@ -73,7 +73,7 @@ class SceneA extends Phaser.Scene {
       this.player.YVEL =0;
     }
     let vector = (new Phaser.Math.Vector2(this.player.XVEL,this.player.YVEL)).normalize();
-    this.player.setVelocity(vector.x,vector.y);
+    this.player.setVelocity(vector.x*2,vector.y*2);
   }
 }
 
