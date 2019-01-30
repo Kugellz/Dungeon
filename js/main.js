@@ -1,6 +1,7 @@
 class SceneA extends Phaser.Scene {
   constructor() {
     super();
+    
     console.log("ITS WORKING");
     this.cursors;
   }
@@ -52,7 +53,8 @@ var config = {
         debug: false
       }
     },
-    scene: [SceneA]
+    scene: [SceneA],
+    //fps:30
 };
 
 var game = new Phaser.Game(config);

@@ -13,6 +13,7 @@ class Player{
     this.sprite.maxSpeed = 10;
     this.sprite.speed = 4;
     this.sprite.parent = this;
+    this.sprite.depth = 1;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
     this.mace = new Mace(this.sprite,5);
