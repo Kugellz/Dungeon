@@ -4,7 +4,7 @@ class Player{
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
     this.sprite = this.scene.matter.add.sprite(400,300,'knight',null, { shape: 'circle',radius:8});
-    this.sprite.setScale(2);
+    this.sprite.setScale(3);
     this.sprite.setFixedRotation();
     this.sprite.setAngle(0);
     this.sprite.setMass(10);
@@ -20,14 +20,16 @@ class Player{
 
   }
   update(){
+    this.updateMaceData()
+    //console.log(this.mace.head.body.velocity);
     if (this.cursors.left.isDown)
     {
-        this.sprite.XVEL =-2;
+        this.sprite.XVEL =-1;
         this.sprite.flipX = true;
     }
     else if (this.cursors.right.isDown)
     {
-        this.sprite.XVEL = 2;
+        this.sprite.XVEL = 1;
         this.sprite.flipX = false;
     } else {
       this.sprite.XVEL =0;
@@ -35,11 +37,11 @@ class Player{
 
     if (this.cursors.up.isDown)
     {
-        this.sprite.YVEL =-2;
+        this.sprite.YVEL =-1;
     }
     else if (this.cursors.down.isDown)
     {
-        this.sprite.YVEL =2;
+        this.sprite.YVEL =1;
     } else {
       this.sprite.YVEL =0;
     }
@@ -52,28 +54,38 @@ class Player{
     this.sprite.setVelocity(vector.x*this.sprite.speed,vector.y*this.sprite.speed);
 
   }
+  updateMaceData(){
+    this.mace.maceVector = new Phaser.Math.Vector2()
+    this.mace.maceVector.set(this.mace.head.body.velocity.x,this.mace.head.body.velocity.y);
+    console.log(this.mace.maceVector.length());
+  }
 }
 
 class Mace{
   constructor(parent,length){
     this.scene = parent.parent.scene;
+    this.maceVector;
+    //-------------------
     var y = parent.y;
+    var balls = [];
     var prev = parent;
     for (var i = 0; i < length; i++)
     {
         var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.1 });
         ball.setCollisionCategory(this.maceColCat);
         ball.setFrictionAir(0.01);
+        ball.setScale(1.5);
 
-        this.scene.matter.add.joint(prev, ball, (i === length-1) ? 12 : 8, 0);
+        this.scene.matter.add.joint(prev, ball, (i === length-1) ? 16 : 12, 0);
         if (i === length-1) {
           ball.setMass(0.5);
-          ball.setScale(2);
+          ball.setScale(2.5);
+          this.head = ball
         }
-
+        balls.push(ball);
         prev = ball;
 
-        y += 10;
+        y += 20;
     }
 
 
