@@ -1,7 +1,7 @@
-class SceneA extends Phaser.Scene {
+class BasePlayScene extends Phaser.Scene{
   constructor() {
-    super();
-    
+    super('base');
+
     console.log("ITS WORKING");
     this.cursors;
   }
@@ -27,6 +27,8 @@ class SceneA extends Phaser.Scene {
         frameRate: 8,
         repeat: -1
     });
+    this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
+    this.cameras.main.setZoom(2);
   }
   update(){
     this.player.update();
@@ -39,9 +41,9 @@ class SceneA extends Phaser.Scene {
 
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    backgroundColor: '#256413',
+    width: 1080,
+    height: 2280,
+    backgroundColor: '#170E4D',
     parent: 'phaser-example',
     pixelArt: true,
     physics: {
@@ -50,10 +52,10 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: false
+        debug: true
       }
     },
-    scene: [SceneA],
+    scene: [MenuScene,BasePlayScene],
     //fps:30
 };
 

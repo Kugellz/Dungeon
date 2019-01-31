@@ -18,6 +18,12 @@ class Player{
 
     this.mace = new Mace(this.sprite,5);
 
+    //touchcontrols
+    this.touchData = {};
+    this.scene.input.on('pointerdown', this.handlePointerDown,this);
+    this.scene.input.on('pointermove', this.handlePointerMove,this);
+    this.scene.input.on('pointerup', this.handlePointerUp,this);
+
   }
   update(){
     this.updateMaceData()
@@ -54,10 +60,41 @@ class Player{
     this.sprite.setVelocity(vector.x*this.sprite.speed,vector.y*this.sprite.speed);
 
   }
+  //touchHandlers-------------------------------------------------------
+  handlePointerDown(pointer){
+    this.touchData.startX = pointer.x;
+    this.touchData.startY = pointer.y;
+  }
+  handlePointerMove(pointer){
+    this.touchData.currentX = pointer.x;
+    this.touchData.currentY = pointer.y;
+    this.updateTouch();
+  }
+  handlePointerUp(pointer){
+    this.touchData.endX = pointer.x;
+    this.touchData.endY = pointer.y;
+
+  }
+
+  updateTouch(){
+    const distX = this.touchData.currentX - this.touchData.startX;
+    const distY = this.touchData.currentY - this.touchData.startY;
+    this.touchData = {};
+    const tolerance = 10;
+    if (distX > 0 + tolerance) {
+      this.moveRight = true;
+    } else if (distX < 0 - tolerance) {
+      this.moveLeft = true;
+    }
+    if (distY < 0 - tolerance) {
+      this.jump = true;
+    }
+  }
+  //-----------------------------------------
   updateMaceData(){
     this.mace.maceVector = new Phaser.Math.Vector2()
     this.mace.maceVector.set(this.mace.head.body.velocity.x,this.mace.head.body.velocity.y);
-    console.log(this.mace.maceVector.length());
+    //console.log(this.mace.maceVector.length());
   }
 }
 
