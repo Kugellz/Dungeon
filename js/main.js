@@ -1,19 +1,40 @@
 class BasePlayScene extends Phaser.Scene{
   constructor() {
     super('base');
+    this.name = 'base';
+    this.tileDataKey;
+    this.tileDataSource;
 
     console.log("ITS WORKING");
     this.cursors;
   }
   preload(){
+    this.tileDataKey = 'test';
+    this.tileDataSource = 'assets/testmap.json';
     this.load.spritesheet('knight', 'assets/knight.png',{ frameWidth: 16, frameHeight: 18 });
     this.load.image('ball','assets/ball.png');
+    this.load.image('tilesheet','assets/tilesheet.png');
+    this.load.tilemapTiledJSON(this.tileDataKey,this.tileDataSource);
   }
   create(){
-    this.matter.world.setBounds(0, 0, 800, 600);
+    this.map = this.make.tilemap({key:this.tileDataKey});
+    var tileset = this.map.addTilesetImage('tilesheet');
+    //this.ground = this.map.createStaticLayer('ground',tileset,0,0).setScale(2.5);
+    this.walls = this.map.createDynamicLayer('collision',tileset,0,0).setScale(2.5);
+    //this.tops = this.map.createStaticLayer('walltops',tileset,0,0).setScale(2.5);
+
+
+    this.walls.setCollisionByProperty({collides:true});
+    this.matter.world.convertTilemapLayer(this.walls);
+    this.matter.world.createDebugGraphic();
+
+
+    //this.cameras.main.setBounds(0,0,this.map.widthInPixels,this.map.heightInPixels);
+    this.matter.world.setBounds(0,0,this.map.widthInPixels * 2.5,this.map.heightInPixels * 2.5);
+    this.player = new Player(this,300,400);
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
-    this.player = new Player(this,300,400);
+
     this.cursors = this.input.keyboard.createCursorKeys();
     this.anims.create({
         key: 'idle',
@@ -52,7 +73,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: true
+        debug: false
       }
     },
     scene: [MenuScene,BasePlayScene],

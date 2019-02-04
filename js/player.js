@@ -14,12 +14,14 @@ class Player{
     this.sprite.speed = 4;
     this.sprite.parent = this;
     this.sprite.depth = 1;
+    this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
     this.mace = new Mace(this.sprite,5);
 
     //touchcontrols
     this.touchData = {};
+    this.graphics = this.scene.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     this.scene.input.on('pointerdown', this.handlePointerDown,this);
     this.scene.input.on('pointermove', this.handlePointerMove,this);
     this.scene.input.on('pointerup', this.handlePointerUp,this);
@@ -31,13 +33,11 @@ class Player{
     if (this.cursors.left.isDown)
     {
         this.sprite.XVEL =-1;
-        this.sprite.flipX = true;
     }
     else if (this.cursors.right.isDown)
     {
         this.sprite.XVEL = 1;
-        this.sprite.flipX = false;
-    } else {
+    } else if (this.touching == false){
       this.sprite.XVEL =0;
     }
 
@@ -48,7 +48,7 @@ class Player{
     else if (this.cursors.down.isDown)
     {
         this.sprite.YVEL =1;
-    } else {
+    } else if (this.touching == false) {
       this.sprite.YVEL =0;
     }
     let vector = (new Phaser.Math.Vector2(this.sprite.XVEL,this.sprite.YVEL)).normalize();
@@ -57,37 +57,63 @@ class Player{
     } else {
       this.sprite.anims.play('walk', true);
     }
+    if (this.sprite.XVEL > 0) {
+      this.sprite.flipX = false;
+    } else {
+      this.sprite.flipX = true;
+    }
     this.sprite.setVelocity(vector.x*this.sprite.speed,vector.y*this.sprite.speed);
 
   }
   //touchHandlers-------------------------------------------------------
   handlePointerDown(pointer){
+    this.touchData = {};
+    console.log("pointerDOWN");
+    this.touching = true;
     this.touchData.startX = pointer.x;
     this.touchData.startY = pointer.y;
   }
   handlePointerMove(pointer){
+    console.log("pointerMOVE");
     this.touchData.currentX = pointer.x;
     this.touchData.currentY = pointer.y;
     this.updateTouch();
   }
   handlePointerUp(pointer){
+    console.log("pointerUP");
+    this.touching = false;
+    this.touchData = {};
     this.touchData.endX = pointer.x;
     this.touchData.endY = pointer.y;
 
   }
 
   updateTouch(){
+    this.graphics.clear();
+    if (this.touching) {
+      var line = new Phaser.Geom.Line(this.touchData.startX + this.scene.cameras.main.scrollX, this.touchData.startY + this.scene.cameras.main.scrollY, this.touchData.currentX + this.scene.cameras.main.scrollX, this.touchData.currentY + this.scene.cameras.main.scrollY);
+    } else {
+      var line = {};
+    }
+    this.graphics.strokeLineShape(line);
     const distX = this.touchData.currentX - this.touchData.startX;
     const distY = this.touchData.currentY - this.touchData.startY;
-    this.touchData = {};
-    const tolerance = 10;
+    //console.log(distX);
+
+    const tolerance = 50;
     if (distX > 0 + tolerance) {
-      this.moveRight = true;
+      this.sprite.XVEL = distX/10;
     } else if (distX < 0 - tolerance) {
-      this.moveLeft = true;
+      this.sprite.XVEL = distX/10;
+    } else {
+      this.sprite.XVEL = 0;
     }
-    if (distY < 0 - tolerance) {
-      this.jump = true;
+    if (distY > 0 + tolerance) {
+      this.sprite.YVEL = distY/10;
+    } else if (distY < 0 - tolerance) {
+      this.sprite.YVEL = distY/10;
+    } else {
+      this.sprite.YVEL = 0;
     }
   }
   //-----------------------------------------
@@ -109,7 +135,7 @@ class Mace{
     for (var i = 0; i < length; i++)
     {
         var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.1 });
-        ball.setCollisionCategory(this.maceColCat);
+        ball.setCollisionCategory(this.scene.maceColCat);
         ball.setFrictionAir(0.01);
         ball.setScale(1.5);
 
