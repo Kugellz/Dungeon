@@ -4,33 +4,26 @@ class BasePlayScene extends Phaser.Scene{
     this.name = 'base';
     this.tileDataKey;
     this.tileDataSource;
+    this.rooms = [];
 
     console.log("ITS WORKING");
     this.cursors;
   }
   preload(){
-    this.tileDataKey = 'test';
-    this.tileDataSource = 'assets/testmap.json';
     this.load.spritesheet('knight', 'assets/knight.png',{ frameWidth: 16, frameHeight: 18 });
     this.load.image('ball','assets/ball.png');
     this.load.image('tilesheet','assets/tilesheet.png');
-    this.load.tilemapTiledJSON(this.tileDataKey,this.tileDataSource);
+    this.load.tilemapTiledJSON('room1','assets/Level1.json');
+    this.load.tilemapTiledJSON('room2','assets/Level2.json');
+    this.load.tilemapTiledJSON('room3','assets/Level3.json');
   }
   create(){
-    this.map = this.make.tilemap({key:this.tileDataKey});
-    var tileset = this.map.addTilesetImage('tilesheet');
-    //this.ground = this.map.createStaticLayer('ground',tileset,0,0).setScale(2.5);
-    this.walls = this.map.createDynamicLayer('collision',tileset,0,0).setScale(2.5);
-    //this.tops = this.map.createStaticLayer('walltops',tileset,0,0).setScale(2.5);
 
-
-    this.walls.setCollisionByProperty({collides:true});
-    this.matter.world.convertTilemapLayer(this.walls);
-    this.matter.world.createDebugGraphic();
-
+    //this.matter.world.createDebugGraphic();
+    this.createRooms(0,0);
 
     //this.cameras.main.setBounds(0,0,this.map.widthInPixels,this.map.heightInPixels);
-    this.matter.world.setBounds(0,0,this.map.widthInPixels * 2.5,this.map.heightInPixels * 2.5);
+    //this.matter.world.setBounds(0,0,this.map.widthInPixels * 2.5,this.map.heightInPixels * 2.5);
     this.player = new Player(this,300,400);
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
@@ -55,6 +48,19 @@ class BasePlayScene extends Phaser.Scene{
     this.player.update();
   }
 
+  createRooms(x,y){
+    var counter = 0;
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 3; j++) {
+        this.rooms[counter] = new BaseRoom(x + (i*32*20),y + (j*30*20),'room1','assets/Level1.json',this);
+        this.rooms[counter].create();
+        console.log(this.rooms[i]);
+        counter++;
+      }
+    }
+
+
+  }
 
 
 }
