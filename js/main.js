@@ -51,7 +51,8 @@ class BasePlayScene extends Phaser.Scene{
     });
 
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
-    this.cameras.main.setZoom(2);
+    this.cameras.main.followOffset.y = -300;
+    this.cameras.main.setZoom(1);
   }
   update(){
     this.player.update();
@@ -61,7 +62,7 @@ class BasePlayScene extends Phaser.Scene{
     var counter = 0;
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
-        this.rooms[counter] = new BaseRoom(x + (i*32*20),y + (j*30*20),'room1','assets/Level1.json',this);
+        this.rooms[counter] = new BaseRoom(x + (i*32*40),y + (j*30*40),'room1','assets/Level1.json',this);
         this.rooms[counter].create();
         //console.log(this.rooms[i]);
         counter++;

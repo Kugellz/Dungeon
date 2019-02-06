@@ -4,24 +4,27 @@ class Player{
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
     this.sprite = this.scene.matter.add.sprite(400,300,'knight',null, { shape: 'circle',radius:7});
-    this.sprite.setScale(3);
+    this.sprite.setScale(6);
     this.sprite.setFixedRotation();
     this.sprite.setAngle(0);
     this.sprite.setMass(10);
     this.sprite.XVEL = 0;
     this.sprite.YVEL = 0;
-    this.sprite.maxSpeed = 10;
-    this.sprite.speed = 4;
+    this.sprite.maxSpeed = 20;
+    this.sprite.speed = 8;
     this.sprite.parent = this;
     this.sprite.depth = 1;
     this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
-    this.mace = new Mace(this.sprite,6);
+    this.mace = new Mace(this.sprite,5);
 
     //touchcontrols
     this.touchData = {};
-    this.graphics = this.scene.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
+    this.graphics = this.scene.add.graphics({
+       lineStyle: { width: 20, color: 0xaa00aa },
+       fillStyle: { color: 0xff0000 }
+     });
     this.scene.input.on('pointerdown', this.handlePointerDown,this);
     this.scene.input.on('pointermove', this.handlePointerMove,this);
     this.scene.input.on('pointerup', this.handlePointerUp,this);
@@ -67,14 +70,17 @@ class Player{
   }
   //touchHandlers-------------------------------------------------------
   handlePointerDown(pointer){
+    this.graphics.clear();
     this.touchData = {};
     console.log("pointerDOWN");
+
     this.touching = true;
     this.touchData.startX = pointer.x;
     this.touchData.startY = pointer.y;
+
   }
   handlePointerMove(pointer){
-    console.log("pointerMOVE");
+    //console.log("pointerMOVE");
     this.touchData.currentX = pointer.x;
     this.touchData.currentY = pointer.y;
     this.updateTouch();
@@ -90,17 +96,24 @@ class Player{
 
   updateTouch(){
     this.graphics.clear();
+    var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, 25);
     if (this.touching) {
-      var line = new Phaser.Geom.Line(this.touchData.startX + this.scene.cameras.main.scrollX, this.touchData.startY + this.scene.cameras.main.scrollY, this.touchData.currentX + this.scene.cameras.main.scrollX, this.touchData.currentY + this.scene.cameras.main.scrollY);
+      var line = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
+      var a = new Phaser.Geom.Point(this.touchData.startX, this.touchData.startY);
+      var b = new Phaser.Geom.Point(this.touchData.startX, this.touchData.startY);
+      var c = new Phaser.Geom.Point(this.touchData.currentX, this.touchData.currentY);
+      //MAKE THE LINES WORK
     } else {
       var line = {};
     }
-    this.graphics.strokeLineShape(line);
+    this.graphics.strokeLineShape(line).setScrollFactor(0,0);
+    this.graphics.fillCircleShape(circle).setScrollFactor(0,0);
+
     const distX = this.touchData.currentX - this.touchData.startX;
     const distY = this.touchData.currentY - this.touchData.startY;
     //console.log(distX);
 
-    const tolerance = 50;
+    const tolerance = 25;
     if (distX > 0 + tolerance) {
       this.sprite.XVEL = distX/10;
     } else if (distX < 0 - tolerance) {
@@ -136,13 +149,13 @@ class Mace{
     {
         var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.1 });
 
-        ball.setFrictionAir(0.01);
-        ball.setScale(1.5);
+        ball.setFrictionAir(0.000);
+        ball.setScale(3);
 
-        this.scene.matter.add.joint(prev, ball, (i === length-1) ? 20 : 12, 0);
+        this.scene.matter.add.joint(prev, ball, (i === length-1) ? 40 : 24, 0);
         if (i === length-1) {
           ball.setMass(0.5);
-          ball.setScale(3);
+          ball.setScale(6);
           this.head = ball
         } else {
           ball.setCollisionCategory(this.scene.maceColCat);
