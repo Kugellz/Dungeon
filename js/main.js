@@ -14,10 +14,11 @@ class BasePlayScene extends Phaser.Scene{
     this.load.image('ball','assets/ball.png');
     this.load.image('tilesheet','assets/tilesheet.png');
     this.load.tilemapTiledJSON('room1','assets/Level1.json');
-    this.load.tilemapTiledJSON('room2','assets/Level2.json');
-    this.load.tilemapTiledJSON('room3','assets/Level3.json');
+    //this.load.tilemapTiledJSON('room2','assets/Level2.json');
+    //this.load.tilemapTiledJSON('room3','assets/Level3.json');
   }
   create(){
+    console.log(this);
 
     //this.matter.world.createDebugGraphic();
     this.createRooms(0,0);
@@ -41,6 +42,14 @@ class BasePlayScene extends Phaser.Scene{
         frameRate: 8,
         repeat: -1
     });
+
+    //Collisions
+    this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
+
+
+
+    });
+
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
     this.cameras.main.setZoom(2);
   }
@@ -54,7 +63,7 @@ class BasePlayScene extends Phaser.Scene{
       for (var j = 0; j < 3; j++) {
         this.rooms[counter] = new BaseRoom(x + (i*32*20),y + (j*30*20),'room1','assets/Level1.json',this);
         this.rooms[counter].create();
-        console.log(this.rooms[i]);
+        //console.log(this.rooms[i]);
         counter++;
       }
     }

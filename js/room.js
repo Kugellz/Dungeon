@@ -17,5 +17,6 @@ class BaseRoom{
 
     this.walls.setCollisionByProperty({collides:true});
     this.scene.matter.world.convertTilemapLayer(this.walls);
+    var enemy = new Enemy(this.scene,this.x + 200,this.y + 200);
   }
 }
