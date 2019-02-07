@@ -96,21 +96,34 @@ class Player{
 
   updateTouch(){
     this.graphics.clear();
+
+    const distX = this.touchData.currentX - this.touchData.startX;
+    const distY = this.touchData.currentY - this.touchData.startY;
+
     var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, 25);
     if (this.touching) {
       var line = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
-      var a = new Phaser.Geom.Point(this.touchData.startX, this.touchData.startY);
-      var b = new Phaser.Geom.Point(this.touchData.startX, this.touchData.startY);
+      var tangent = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
+      Phaser.Geom.Line.Rotate(tangent,1.5708);
+
+      console.log(Phaser.Geom.Line.Length(tangent));
+      Phaser.Geom.Line.Extend(tangent,-(Phaser.Geom.Line.Length(tangent)/10));
+
+      var a = new Phaser.Geom.Point(tangent.x1, tangent.y1);
+      var b = new Phaser.Geom.Point(tangent.x2, tangent.y2);
       var c = new Phaser.Geom.Point(this.touchData.currentX, this.touchData.currentY);
+      var triangle = new Phaser.Geom.Triangle(a.x, a.y, b.x, b.y, c.x, c.y);
       //MAKE THE LINES WORK
     } else {
       var line = {};
     }
+    this.graphics.fillTriangleShape(triangle).setScrollFactor(0,0);
     this.graphics.strokeLineShape(line).setScrollFactor(0,0);
+    this.graphics.strokeLineShape(tangent).setScrollFactor(0,0);
+
     this.graphics.fillCircleShape(circle).setScrollFactor(0,0);
 
-    const distX = this.touchData.currentX - this.touchData.startX;
-    const distY = this.touchData.currentY - this.touchData.startY;
+
     //console.log(distX);
 
     const tolerance = 25;
