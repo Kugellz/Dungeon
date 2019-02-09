@@ -23,8 +23,8 @@ class Player{
     this.touchData = {};
     this.graphics = this.scene.add.graphics({
        lineStyle: { width: 20, color: 0xaa00aa },
-       fillStyle: { color: 0xff0000 }
-     });
+    });
+
     this.scene.input.on('pointerdown', this.handlePointerDown,this);
     this.scene.input.on('pointermove', this.handlePointerMove,this);
     this.scene.input.on('pointerup', this.handlePointerUp,this);
@@ -100,15 +100,15 @@ class Player{
     const distX = this.touchData.currentX - this.touchData.startX;
     const distY = this.touchData.currentY - this.touchData.startY;
 
-    var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, 25);
+    var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, 100);
     if (this.touching) {
       var line = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
-      var tangent = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
-      Phaser.Geom.Line.Rotate(tangent,1.5708);
-
-      console.log(Phaser.Geom.Line.Length(tangent));
-      Phaser.Geom.Line.Extend(tangent,-(Phaser.Geom.Line.Length(tangent)/10));
-
+      var normalAngle = Phaser.Geom.Line.NormalAngle(line);
+      var tangent = new Phaser.Geom.Line(
+        this.touchData.startX + Math.cos(normalAngle) * 100, this.touchData.startY + Math.sin(normalAngle) * 100,
+        this.touchData.startX + Math.cos(normalAngle) * -100, this.touchData.startY + Math.sin(normalAngle) * -100
+      );
+      //triangle
       var a = new Phaser.Geom.Point(tangent.x1, tangent.y1);
       var b = new Phaser.Geom.Point(tangent.x2, tangent.y2);
       var c = new Phaser.Geom.Point(this.touchData.currentX, this.touchData.currentY);
@@ -117,10 +117,9 @@ class Player{
     } else {
       var line = {};
     }
+    this.graphics.fillStyle(0x00BD0E,0.3);
     this.graphics.fillTriangleShape(triangle).setScrollFactor(0,0);
-    this.graphics.strokeLineShape(line).setScrollFactor(0,0);
-    this.graphics.strokeLineShape(tangent).setScrollFactor(0,0);
-
+    this.graphics.fillStyle(0x00BD0E,1);
     this.graphics.fillCircleShape(circle).setScrollFactor(0,0);
 
 
