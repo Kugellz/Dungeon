@@ -88,6 +88,7 @@ class Player{
   handlePointerUp(pointer){
     console.log("pointerUP");
     this.touching = false;
+    this.graphics.clear();
     this.touchData = {};
     this.touchData.endX = pointer.x;
     this.touchData.endY = pointer.y;

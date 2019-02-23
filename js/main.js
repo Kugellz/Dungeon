@@ -62,7 +62,7 @@ class BasePlayScene extends Phaser.Scene{
     var counter = 0;
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
-        this.rooms[counter] = new BaseRoom(x + (i*32*40),y + (j*30*40),'room1','assets/Level1.json',this);
+        this.rooms[counter] = new BaseRoom(x + (i*16*16*5),y + (j*16*16*5),16,16,'room1','assets/Level1.json',this);
         this.rooms[counter].create();
         //console.log(this.rooms[i]);
         counter++;
