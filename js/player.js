@@ -152,7 +152,9 @@ class Player{
 
 class Mace{
   constructor(parent,length){
-    this.scene = parent.parent.scene;
+      this.scene = parent.parent.scene;
+      this.maceScale = 1.5;
+      this.ballScale = 1.2;
     this.maceVector;
     //-------------------
     var y = parent.y;
@@ -160,15 +162,15 @@ class Mace{
     var prev = parent;
     for (var i = 0; i < length; i++)
     {
-        var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.1 });
+        var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.01 });
 
         ball.setFrictionAir(0.000);
-        ball.setScale(3);
+        ball.setScale(3 * this.maceScale);
 
-        this.scene.matter.add.joint(prev, ball, (i === length-1) ? 40 : 24, 0);
+        this.scene.matter.add.joint(prev, ball, (i === length - 1) ? 40 * this.maceScale * this.ballScale : 24 * this.maceScale, 0);
         if (i === length-1) {
           ball.setMass(0.5);
-          ball.setScale(6);
+            ball.setScale(6 * this.maceScale * this.ballScale);
           this.head = ball
         } else {
           ball.setCollisionCategory(this.scene.maceColCat);

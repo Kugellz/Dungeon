@@ -26,6 +26,7 @@ class BaseRoom{
       [0,0,0,0,0]
     ];
 
+    //EDIT LEVEL - auto creates the level matrix, adds walls
     const level = [];
     for (var y = 0; y < this.height; y++) {
       var row = [];
@@ -43,13 +44,13 @@ class BaseRoom{
       level.push(row);
     }
 
-    //NEW WAYS
+    //NEW WAYS - give the level data to the tilemap creator.
     const map = this.scene.make.tilemap({data: level,tileWidth:16,tileHeight:16});
     this.tiles = map.addTilesetImage('tilesheet');
     this.walls = map.createStaticLayer(0,this.tiles,this.x,this.y).setScale(5);
 
     this.walls.setCollisionByProperty({collides:true});
     this.scene.matter.world.convertTilemapLayer(this.walls);
-    var enemy = new Enemy(this.scene,this.x + 200,this.y + 200);
+    var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
   }
 }
