@@ -49,7 +49,7 @@ class BaseRoom{
     this.tiles = map.addTilesetImage('tilesheet');
     this.walls = map.createStaticLayer(0,this.tiles,this.x,this.y).setScale(5);
 
-    this.walls.setCollisionByProperty({collides:true});
+    this.walls.setCollision([0,1],true,true);
     this.scene.matter.world.convertTilemapLayer(this.walls);
     var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
   }

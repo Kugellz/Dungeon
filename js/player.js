@@ -22,7 +22,7 @@ class Player{
     //touchcontrols
     this.touchData = {};
     this.graphics = this.scene.add.graphics({
-       lineStyle: { width: 20, color: 0xaa00aa },
+       lineStyle: { width: 20, color: 0x274E13 },
     });
 
     this.scene.input.on('pointerdown', this.handlePointerDown,this);
@@ -118,9 +118,9 @@ class Player{
     } else {
       var line = {};
     }
-    this.graphics.fillStyle(0x00BD0E,0.3);
+    this.graphics.fillStyle(0x274E13,0.3);
     this.graphics.fillTriangleShape(triangle).setScrollFactor(0,0);
-    this.graphics.fillStyle(0x00BD0E,1);
+    this.graphics.fillStyle(0x274E13,1);
     this.graphics.fillCircleShape(circle).setScrollFactor(0,0);
 
 
