@@ -3,8 +3,12 @@ class Player{
     this.scene = scene;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
-    this.sprite = this.scene.matter.add.sprite(400,300,'knight',null, { shape: 'circle',radius:7});
-    this.sprite.setScale(6);
+    this.sprite = this.scene.matter.add.sprite(400,300,'knight',null,null);
+    this.sprite.setBody({
+      type:'circle',
+      radius:12
+    });
+    this.sprite.setScale(5);
     this.sprite.setFixedRotation();
     this.sprite.setAngle(0);
     this.sprite.setMass(10);
@@ -17,7 +21,7 @@ class Player{
     this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
-    this.mace = new Mace(this.sprite,5);
+    this.mace = new Mace(this.sprite,5,1,1.5);
 
     //touchcontrols
     this.touchData = {};
@@ -62,7 +66,7 @@ class Player{
     }
     if (this.sprite.XVEL > 0) {
       this.sprite.flipX = false;
-    } else {
+    } else if (this.sprite.XVEL < 0) {
       this.sprite.flipX = true;
     }
     this.sprite.setVelocity(vector.x*this.sprite.speed,vector.y*this.sprite.speed);
@@ -151,10 +155,10 @@ class Player{
 }
 
 class Mace{
-  constructor(parent,length){
+  constructor(parent,length,scale,ballScale){
       this.scene = parent.parent.scene;
-      this.maceScale = 1.5;
-      this.ballScale = 1.2;
+      this.maceScale = scale;
+      this.ballScale = ballScale;
     this.maceVector;
     //-------------------
     var y = parent.y;
@@ -169,8 +173,8 @@ class Mace{
 
         this.scene.matter.add.joint(prev, ball, (i === length - 1) ? 40 * this.maceScale * this.ballScale : 24 * this.maceScale, 0);
         if (i === length-1) {
-          ball.setMass(0.5);
             ball.setScale(6 * this.maceScale * this.ballScale);
+            ball.setMass(0.5);
           this.head = ball
         } else {
           ball.setCollisionCategory(this.scene.maceColCat);

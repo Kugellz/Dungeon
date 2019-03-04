@@ -10,7 +10,8 @@ class BasePlayScene extends Phaser.Scene{
     this.cursors;
   }
   preload(){
-    this.load.spritesheet('knight', 'assets/knight.png',{ frameWidth: 16, frameHeight: 18 });
+    this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
+    this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.image('ball','assets/ball.png');
     this.load.image('tilesheet','assets/tilesheet.png');
     this.load.tilemapTiledJSON('room1','assets/Level1.json');
@@ -32,13 +33,13 @@ class BasePlayScene extends Phaser.Scene{
     this.cursors = this.input.keyboard.createCursorKeys();
     this.anims.create({
         key: 'idle',
-        frames: this.anims.generateFrameNumbers('knight', { start: 0, end: 2 }),
+        frames: this.anims.generateFrameNumbers('knight', { start: 0, end: 3 }),
         frameRate: 5,
         repeat: -1
     });
     this.anims.create({
         key: 'walk',
-        frames: this.anims.generateFrameNumbers('knight', { start: 3, end: 6 }),
+        frames: this.anims.generateFrameNumbers('knight', { start: 4, end: 8 }),
         frameRate: 8,
         repeat: -1
     });
@@ -59,20 +60,9 @@ class BasePlayScene extends Phaser.Scene{
   }
 
   createRooms(x,y){
-    var counter = 0;
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        this.rooms[counter] = new BaseRoom(x + (i*16*16*5),y + (j*16*16*5),16,16,'room1','assets/Level1.json',this);
-        this.rooms[counter].create();
-        //console.log(this.rooms[i]);
-        counter++;
-      }
-    }
-
-
+    this.rooms[0] = new BaseRoom(0,0,16,16,[1,0,1,1],'room1','assets/Level1.json',this);
+    this.rooms[0].create();
   }
-
-
 }
 
 
@@ -89,7 +79,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: false
+        debug: true
       }
     },
     scene: [MenuScene,BasePlayScene],
