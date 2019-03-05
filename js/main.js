@@ -4,7 +4,7 @@ class BasePlayScene extends Phaser.Scene{
     this.name = 'base';
     this.tileDataKey;
     this.tileDataSource;
-    this.rooms = [];
+    this.dungeon;
 
     console.log("ITS WORKING");
     this.cursors;
@@ -22,11 +22,11 @@ class BasePlayScene extends Phaser.Scene{
     console.log(this);
 
     //this.matter.world.createDebugGraphic();
-    this.createRooms(0,0);
+    this.createDungeon(0,0);
 
     //this.cameras.main.setBounds(0,0,this.map.widthInPixels,this.map.heightInPixels);
     //this.matter.world.setBounds(0,0,this.map.widthInPixels * 2.5,this.map.heightInPixels * 2.5);
-    this.player = new Player(this,300,400);
+    this.player = new Player(this,0,0);
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
 
@@ -52,17 +52,20 @@ class BasePlayScene extends Phaser.Scene{
     });
 
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
-    this.cameras.main.followOffset.y = -300;
+    this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
   }
   update(){
     this.player.update();
+
+
+  }
+  createDungeon(x,y){
+    this.dungeon = new dungeon(1,1,2,1,this);
+    this.dungeon.create();
   }
 
-  createRooms(x,y){
-    this.rooms[0] = new BaseRoom(0,0,16,16,[1,0,1,1],'room1','assets/Level1.json',this);
-    this.rooms[0].create();
-  }
+
 }
 
 
@@ -70,7 +73,11 @@ var config = {
     type: Phaser.AUTO,
     width: 1080,
     height: 2280,
-    backgroundColor: '#170E4D',
+    scale: {
+      mode:Phaser.Scale.RESIZE,
+      autoCenter : Phaser.Scale.CENTER_BOTH
+    },
+    backgroundColor: '#000000',
     parent: 'phaser-example',
     pixelArt: true,
     physics: {
@@ -79,7 +86,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: true
+        debug: false
       }
     },
     scene: [MenuScene,BasePlayScene],

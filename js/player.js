@@ -3,7 +3,7 @@ class Player{
     this.scene = scene;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
-    this.sprite = this.scene.matter.add.sprite(400,300,'knight',null,null);
+    this.sprite = this.scene.matter.add.sprite(0,0,'knight',null,null);
     this.sprite.setBody({
       type:'circle',
       radius:12

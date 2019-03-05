@@ -1,11 +1,11 @@
 class BaseRoom{
-  constructor(x,y,width,height,values,tileDataKey,tileDataSource,scene){
+  constructor(x,y,width,height,values,scene){
     this.scene = scene;
-    this.x = x;
-    this.y = y;
-    this.name = tileDataKey;
-    this.tileDataKey = tileDataKey;
-    this.tileDataSource = tileDataSource;
+    this.x = x - (width/2)*16*5;
+    this.y = y - (height/2)*16*5;
+    //this.name = tileDataKey;
+    //this.tileDataKey = tileDataKey;
+    //this.tileDataSource = tileDataSource;
     this.width = width;
     this.height = height;
 
@@ -24,7 +24,7 @@ class BaseRoom{
 
   }
   create(){
-
+    console.log("constructing ROOM");
     const levelTest = [
       [0,0,0,0,0],
       [0,0,0,0,0],
@@ -101,7 +101,7 @@ class BaseRoom{
     this.tops = topMap.createStaticLayer(0,this.topTiles,this.x,this.y-16*5).setScale(5);
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
-    var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
+    //var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
   }
 
   createArray(){
