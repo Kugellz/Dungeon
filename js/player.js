@@ -6,11 +6,12 @@ class Player{
     this.sprite = this.scene.matter.add.sprite(0,0,'knight',null,null);
     this.sprite.setBody({
       type:'circle',
-      radius:12
-    });
-    this.sprite.setScale(5);
-    this.sprite.setFixedRotation();
-    this.sprite.setAngle(0);
+      radius:8
+    })
+    .setOrigin(0.5, 0.7)
+    .setScale(5)
+    .setFixedRotation()
+    .setAngle(0)
     this.sprite.setMass(10);
     this.sprite.XVEL = 0;
     this.sprite.YVEL = 0;
@@ -122,9 +123,10 @@ class Player{
     } else {
       var line = {};
     }
-    this.graphics.fillStyle(0x00BD0E,0.3);
+    this.graphics.depth = 5;
+    this.graphics.fillStyle(0xFFFFFF,0.3);
     this.graphics.fillTriangleShape(triangle).setScrollFactor(0,0);
-    this.graphics.fillStyle(0x00BD0E,1);
+    this.graphics.fillStyle(0xFFFFFF,1);
     this.graphics.fillCircleShape(circle).setScrollFactor(0,0);
 
 

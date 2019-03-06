@@ -53,7 +53,7 @@ class BasePlayScene extends Phaser.Scene{
 
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
     this.cameras.main.followOffset.y = -250;
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(0.5);
   }
   update(){
     this.player.update();
@@ -61,7 +61,7 @@ class BasePlayScene extends Phaser.Scene{
 
   }
   createDungeon(x,y){
-    this.dungeon = new dungeon(1,1,2,1,this);
+    this.dungeon = new dungeon(1,15,4,1,this);
     this.dungeon.create();
   }
 
@@ -86,7 +86,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: false
+        debug: true
       }
     },
     scene: [MenuScene,BasePlayScene],

@@ -1,8 +1,12 @@
 class BaseRoom{
-  constructor(x,y,width,height,values,scene){
+  constructor(x,y,width,height,values,doorCount,scene){
     this.scene = scene;
-    this.x = x - (width/2)*16*5;
-    this.y = y - (height/2)*16*5;
+    this.x = x;
+    this.y = y;
+    this.readX = x - (width/2)*16*5;
+    this.readY = y - (height/2)*16*5;
+    this.values = values;
+    this.doorCount = doorCount;
     //this.name = tileDataKey;
     //this.tileDataKey = tileDataKey;
     //this.tileDataSource = tileDataSource;
@@ -92,13 +96,14 @@ class BaseRoom{
     //NEW WAYS - give the level data to the tilemap creator.
     const wallMap = this.scene.make.tilemap({data: wallData,tileWidth:16,tileHeight:16});
     this.wallTiles = wallMap.addTilesetImage('tilesheet');
-    this.walls = wallMap.createStaticLayer(0,this.wallTiles,this.x,this.y).setScale(5);
+    this.walls = wallMap.createStaticLayer(0,this.wallTiles,this.readX,this.readY).setScale(5);
+    this.walls.depth = 0;
     this.walls.setCollision([1],true,true);
     this.scene.matter.world.convertTilemapLayer(this.walls);
 
     const topMap = this.scene.make.tilemap({data: wallTopData,tileWidth:16,tileHeight:16});
     this.topTiles = topMap.addTilesetImage('tilesheet');
-    this.tops = topMap.createStaticLayer(0,this.topTiles,this.x,this.y-16*5).setScale(5);
+    this.tops = topMap.createStaticLayer(0,this.topTiles,this.readX,this.readY-16*5).setScale(5);
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
     //var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
