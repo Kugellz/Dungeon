@@ -61,7 +61,7 @@ class BasePlayScene extends Phaser.Scene{
 
   }
   createDungeon(x,y){
-    this.dungeon = new dungeon(1,15,4,1,this);
+    this.dungeon = new dungeon(11,15,4,1,this);
     this.dungeon.create();
   }
 

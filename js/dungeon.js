@@ -1,8 +1,8 @@
-class dungeon{
-  constructor(size,totRooms,pathStart,lootPerc,scene){
+class dungeon {
+  constructor(size, totRooms, pathStart, lootPerc, scene) {
     this.scene = scene;
     this.size = size;
-    this.grid = 16*16*5;
+    this.grid = 16 * 16 * 5;
     this.totalRooms = totRooms;
     if (pathStart > 4) {
       pathStart = 4;
@@ -13,89 +13,86 @@ class dungeon{
     this.lootPercent = lootPerc;
     this.rooms = [];
   }
-  create(){
+  create() {
     console.log("constructing");
     this.generateDungeon();
 
 
   }
 
-  generateDungeon(){
-    this.generateRoom(0,0,16,16,[0,0,0,0],this.pathStartNum);
-    console.log("ROOM VALUE: " + this.rooms[0].values);
-    for (var i = 0; i < this.totalRooms; i++) {
-      if (i == 0) {
-        if (this.rooms[i].values[0] == 1) {
-          this.generateRoom(this.rooms[i].x-this.grid,this.rooms[i].y,16,8,[1,0,1,0],2);
+  generateDungeon() {
+    this.level = this.createArray(this.size, this.size);
+
+    for (var i = 0; i < 4; i++) {
+      var headX = Phaser.Math.FloorTo(this.size / 2);
+      var headY = Phaser.Math.FloorTo(this.size / 2);
+      var headDir = Phaser.Math.Between(0, 3);
+
+      for (var j = 0; j < 10; j++) {
+        this.level[headY][headX] = i;
+        this.createRoom(headX * this.grid,headY * this.grid,16,16,[1,1,1,1],4);
+        if (j%2 == 0) {
+          headDir += Phaser.Math.Between(-1, 1);
         }
-        if (this.rooms[i].values[1] == 1) {
-          this.generateRoom(this.rooms[i].x,this.rooms[i].y+this.grid,8,16,[0,1,0,1],2);
+        if (headDir > 3) {
+          headDir = 0;
         }
-        if (this.rooms[i].values[2] == 1) {
-          this.generateRoom(this.rooms[i].x+this.grid,this.rooms[0].y,16,8,[1,0,1,0],2);
+        if (headDir < 0) {
+          headDir = 3;
         }
-        if (this.rooms[i].values[3] == 1) {
-          this.generateRoom(this.rooms[i].x,this.rooms[i].y-this.grid,8,16,[0,1,0,1],2);
+        //DETECT EDGE
+        if (headX == 0 || headX == this.size - 1) {
+            headDir = Phaser.Math.RND.pick([1,3]);
         }
-      } else {
-        if (this.rooms[i].values[0] == 1 && this.rooms[i].x < this.rooms[i-1].x) {
-          this.generateRoom(this.rooms[i].x-this.grid,this.rooms[i].y,16,16,[0,0,1,0],3);
+        if (headY == 0 || headX == this.size - 1) {
+            headDir = Phaser.Math.RND.pick([0,2]);
         }
-        if (this.rooms[i].values[1] == 1 && this.rooms[i].y > this.rooms[i-1].y) {
-          this.generateRoom(this.rooms[i].x,this.rooms[i].y+this.grid,16,16,[0,0,0,1],3);
-        }
-        if (this.rooms[i].values[2] == 1 && this.rooms[i].x > this.rooms[i-1].x) {
-          this.generateRoom(this.rooms[i].x+this.grid,this.rooms[0].y,16,16,[1,0,0,0],3);
-        }
-        if (this.rooms[i].values[3] == 1 && this.rooms[i].y < this.rooms[i-1].y) {
-          this.generateRoom(this.rooms[i].x,this.rooms[i].y-this.grid,16,16,[0,0,0,1],3);
+        var walk = 1;
+        switch (headDir) {
+          case 0:
+          console.log(i + " : " + j +"left");
+            headX -= walk;
+            break;
+          case 1:
+          console.log(i + " : " + j + "up");
+            headY-= walk;
+            break;
+          case 2:
+          console.log(i + " : " +j +"right");
+            headX+= walk;
+            break;
+          case 3:
+          console.log(i + " : " +j+"down");
+            headY+=walk;
+            break;
+
+          default:
+
         }
       }
-
     }
-    // if (i > 0) {
-    //   var prevX = this.rooms[i-1].x;
-    //   var prevY = this.rooms[i-1].y;
-    // } else {
-    //   var prevX = 0;
-    //   var prevY = 0;
-    // }
-    //
-    // if (this.rooms[i].values[0] == 1) {
-    //   this.generateRoom(prevX-this.grid,prevY,16,8,[1,0,1,0],2);
-    // }
-    // if (this.rooms[i].values[1] == 1) {
-    //   this.generateRoom(prevX, prevY-this.grid,8,16,[0,1,0,1],2);
-    // }
-    // if (this.rooms[i].values[2] == 1) {
-    //   this.generateRoom(prevX + this.grid,prevY,16,8,[1,0,1,0],2);
-    // }
-    // if (this.rooms[i].values[3] == 1) {
-    //   this.generateRoom(prevX, prevY + this.grid,8,16,[0,1,0,1],2);
-    // }
+    console.log(this.level);
+
+
 
 
   }
 
-
-
-  generateRoom(x,y,w,h,config,doorTotal){
+  generateRoom(config, doorTotal) {
     //var config = [0,0,0,0];#
     var doorsLeft = 0;
     for (var i = 0; i < config.length; i++) {
       if (config[i] == 0) {
         doorsLeft++;
-      }else {
-        doorTotal--;
+      } else {
+        //doorTotal--;
       }
     }
-
-    var counter = 0;
+    //console.log(doorTotal);
     for (var i = 0; i < doorTotal; i++) {
+      var counter = 0;
       //GEN RANDOM NUMVER
-      console.log("DOORSLEFT: " + doorsLeft);
-      var value = Phaser.Math.Between(0,doorsLeft-1);
-      console.log("RANDOM: " + value);
+      var value = Phaser.Math.Between(0, doorsLeft - 1);
       //RESET COUNTER
       counter = 0;
       for (var j = 0; j < 4; j++) {
@@ -104,7 +101,7 @@ class dungeon{
             //CHECK IF CURRENT COUNTER IN ARRAY IS EQUAL TO ZERO
             config[j] = 1;
             doorsLeft--;
-            console.log(config);
+
             break;
           } else {
             counter++
@@ -115,11 +112,27 @@ class dungeon{
       }
     }
 
-    this.createRoom(x,y,w,h,config,doorTotal);
+    //console.log(config);
+    return config;
   }
 
-  createRoom(x,y,w,h,roomConfig,doorCount){
-    var room = new BaseRoom(x,y,w,h,roomConfig,doorCount,this.scene);
+
+
+  createArray(w, h) {
+    const level = [];
+    for (var y = 0; y < h; y++) {
+      level[y] = [];
+      for (var x = 0; x < w; x++) {
+        level[y][x] = 0;
+      }
+    }
+    return level;
+  }
+
+
+
+  createRoom(x, y, w, h, roomConfig, doorCount) {
+    var room = new BaseRoom(x, y, w, h, roomConfig, doorCount, this.scene);
     room.create();
     this.rooms.push(room);
   }
