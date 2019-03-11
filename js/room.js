@@ -47,7 +47,7 @@ class BaseRoom {
         if (y == 0 || y == this.height - 1 || x == 0 || x == this.width - 1) {
           num = 1;
         } else {
-          num = 2;
+          num = Phaser.Math.RND.pick([2,2,2,2,2,2,2,2,2,2,3,10,11]);
         }
         //RIGHT DOOR
         if (this.right) {

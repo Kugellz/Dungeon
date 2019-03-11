@@ -12,10 +12,15 @@ class dungeon {
     this.pathStartNum = pathStart;
     this.lootPercent = lootPerc;
     this.rooms = [];
+    this.spawn = {
+      x:0,
+      y:0
+    };
   }
   create() {
     console.log("constructing");
     this.generateDungeon();
+    this.modifyDungeon();
 
 
   }
@@ -23,14 +28,16 @@ class dungeon {
   generateDungeon() {
     this.level = this.createArray(this.size, this.size);
 
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 5; i++) {
       var headX = Phaser.Math.FloorTo(this.size / 2);
       var headY = Phaser.Math.FloorTo(this.size / 2);
-      var headDir = Phaser.Math.Between(0, 3);
-
+      this.spawn.x = headX * this.grid;
+      this.spawn.y = headY * this.grid;
+      this.level[headY][headX] = 1;
+      //var headDir = Phaser.Math.Between(0, 3);
+      var headDir = i;
       for (var j = 0; j < 10; j++) {
-        this.level[headY][headX] = i;
-        this.createRoom(headX * this.grid,headY * this.grid,16,16,[1,1,1,1],4);
+
         if (j%2 == 0) {
           headDir += Phaser.Math.Between(-1, 1);
         }
@@ -41,34 +48,48 @@ class dungeon {
           headDir = 3;
         }
         //DETECT EDGE
-        if (headX == 0 || headX == this.size - 1) {
-            headDir = Phaser.Math.RND.pick([1,3]);
+        if (headX == 0) {
+          this.level[headY][headX] = 1;
+            headDir = Phaser.Math.RND.pick([1,2,3]);
         }
-        if (headY == 0 || headX == this.size - 1) {
-            headDir = Phaser.Math.RND.pick([0,2]);
+        if (headX == (this.size - 1)) {
+          this.level[headY][headX] = 1;
+            headDir = Phaser.Math.RND.pick([0,1,3]);
+        }
+        if (headY == 0) {
+          this.level[headY][headX] = 1;
+            headDir = Phaser.Math.RND.pick([0,2,3]);
+        }
+        if (headY == (this.size - 1)) {
+          this.level[headY][headX] = 1;
+            headDir = Phaser.Math.RND.pick([0,1,2]);
         }
         var walk = 1;
         switch (headDir) {
           case 0:
-          console.log(i + " : " + j +"left");
+          //console.log(i + " : " + j +"left");
             headX -= walk;
             break;
           case 1:
-          console.log(i + " : " + j + "up");
+          //console.log(i + " : " + j + "up");
             headY-= walk;
             break;
           case 2:
-          console.log(i + " : " +j +"right");
+          //console.log(i + " : " +j +"right");
             headX+= walk;
             break;
           case 3:
-          console.log(i + " : " +j+"down");
+          //console.log(i + " : " +j+"down");
             headY+=walk;
             break;
 
           default:
 
         }
+        //console.log(this.level);
+        console.log(headX + ", " + headY + ", " + headDir);
+        this.level[headY][headX] = 1;
+
       }
     }
     console.log(this.level);
@@ -76,6 +97,31 @@ class dungeon {
 
 
 
+  }
+
+  modifyDungeon(){
+    for (var y = 0; y < this.size; y++) {
+      for (var x = 0; x < this.size; x++) {
+        var config = [1,1,1,1]
+        if (x == 0 || this.level[y][x-1] == 0) {
+          config[0] = 0;
+        }
+        if (y == 0 || this.level[y-1][x] == 0) {
+          config[1] = 0;
+        }
+        if (x == this.size-1 || this.level[y][x+1] == 0) {
+          config[2] = 0;
+        }
+        if (y == this.size-1 || this.level[y+1][x] == 0) {
+          config[3] = 0;
+        }
+        if (this.level[y][x] == 1) {
+          this.createRoom(x * this.grid,y * this.grid,16,16,config,4);
+        }
+
+        //console.log(x + ", " + y + ", " + config);
+      }
+    }
   }
 
   generateRoom(config, doorTotal) {

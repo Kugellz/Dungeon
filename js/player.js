@@ -3,7 +3,7 @@ class Player{
     this.scene = scene;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
-    this.sprite = this.scene.matter.add.sprite(0,0,'knight',null,null);
+    this.sprite = this.scene.matter.add.sprite(x,y,'knight',null,null);
     this.sprite.setBody({
       type:'circle',
       radius:8
@@ -164,11 +164,12 @@ class Mace{
     this.maceVector;
     //-------------------
     var y = parent.y;
+    var x = parent.x;
     var balls = [];
     var prev = parent;
     for (var i = 0; i < length; i++)
     {
-        var ball = this.scene.matter.add.image(400, y, 'ball', null, { shape: 'circle', mass: 0.01 });
+        var ball = this.scene.matter.add.image(x, y, 'ball', null, { shape: 'circle', mass: 0.01 });
 
         ball.setFrictionAir(0.000);
         ball.setScale(3 * this.maceScale);
