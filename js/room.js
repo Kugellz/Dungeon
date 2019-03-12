@@ -28,7 +28,7 @@ class BaseRoom {
 
   }
   create() {
-    console.log("constructing ROOM");
+    console.log("Constructing Room");
     const levelTest = [
       [0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0],
@@ -45,7 +45,7 @@ class BaseRoom {
       for (var x = 0; x < this.width; x++) {
         var num = Phaser.Math.RND.between(0, 1);
         if (y == 0 || y == this.height - 1 || x == 0 || x == this.width - 1) {
-          num = 1;
+          num = Phaser.Math.RND.pick([1,1,1,1,9]);;
         } else {
           num = Phaser.Math.RND.pick([2,2,2,2,2,2,2,2,2,2,3,10,11]);
         }
@@ -80,7 +80,7 @@ class BaseRoom {
 
     for (var y = 0; y < this.height; y++) {
       for (var x = 0; x < this.width; x++) {
-        if (wallData[y][x] == 1) {
+        if (wallData[y][x] == 1 || wallData[y][x] == 9) {
           wallTopData[y][x] = 0;
         } else {
           wallTopData[y][x] = -1;
@@ -102,7 +102,7 @@ class BaseRoom {
     this.wallTiles = wallMap.addTilesetImage('tilesheet');
     this.walls = wallMap.createStaticLayer(0, this.wallTiles, this.readX, this.readY).setScale(5);
     this.walls.depth = 0;
-    this.walls.setCollision([1], true, true);
+    this.walls.setCollision([1,9], true, true);
     this.scene.matter.world.convertTilemapLayer(this.walls);
 
     const topMap = this.scene.make.tilemap({
@@ -114,7 +114,8 @@ class BaseRoom {
     this.tops = topMap.createStaticLayer(0, this.topTiles, this.readX, this.readY - 16 * 5).setScale(5);
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
-    //var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
+    var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
+    this.scene.enemies.push(enemy);
   }
 
   createArray() {

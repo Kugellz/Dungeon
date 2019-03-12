@@ -5,6 +5,7 @@ class BasePlayScene extends Phaser.Scene{
     this.tileDataKey;
     this.tileDataSource;
     this.dungeon;
+    this.enemies = [];
 
     console.log("ITS WORKING");
     this.cursors;
@@ -13,6 +14,7 @@ class BasePlayScene extends Phaser.Scene{
     this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.image('ball','assets/ball.png');
+    this.load.image('spikedBall','assets/spikeBall.png');
     this.load.image('tilesheet','assets/tilesheet.png');
     this.load.tilemapTiledJSON('room1','assets/Level1.json');
     //this.load.tilemapTiledJSON('room2','assets/Level2.json');
@@ -60,6 +62,12 @@ class BasePlayScene extends Phaser.Scene{
     if (this.player) {
       this.player.update();
     }
+    if (this.enemies) {
+      for (var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].update();
+      }
+    }
+
 
 
 
@@ -90,7 +98,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: false
+        debug: true
       }
     },
     scene: [MenuScene,BasePlayScene],

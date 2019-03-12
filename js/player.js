@@ -22,7 +22,8 @@ class Player{
     this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
-    this.mace = new Mace(this.sprite,5,1,1.5);
+    this.mace = new Mace(this.sprite,4  ,1,1.5);
+    //constructor(parent,length,scale,ballScale)
 
     //touchcontrols
     this.touchData = {};
@@ -172,21 +173,25 @@ class Mace{
         var ball = this.scene.matter.add.image(x, y, 'ball', null, { shape: 'circle', mass: 0.01 });
 
         ball.setFrictionAir(0.000);
-        ball.setScale(3 * this.maceScale);
+        ball.setScale(2 * this.maceScale);
 
-        this.scene.matter.add.joint(prev, ball, (i === length - 1) ? 40 * this.maceScale * this.ballScale : 24 * this.maceScale, 0);
-        if (i === length-1) {
-            ball.setScale(6 * this.maceScale * this.ballScale);
-            ball.setMass(0.5);
-          this.head = ball
-        } else {
-          ball.setCollisionCategory(this.scene.maceColCat);
-        }
+        this.scene.matter.add.constraint(prev, ball,24 * this.maceScale, 1);
+
+        ball.setCollisionCategory(this.scene.maceColCat);
+
         balls.push(ball);
         prev = ball;
 
         y += 20;
     }
+    var ball = this.scene.matter.add.image(x, y, 'spikedBall', null, { shape: 'circle', mass: 0.01 });
+    ball.setScale(3 * this.maceScale * this.ballScale);
+    ball.setMass(0.5);
+    this.scene.matter.add.constraint(prev, ball,20 * this.maceScale * this.ballScale, 1);
+    balls.push(ball);
+    this.head = ball
+
+
 
 
   }

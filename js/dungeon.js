@@ -18,7 +18,7 @@ class dungeon {
     };
   }
   create() {
-    console.log("constructing");
+    console.log("Constructing Dungeon");
     this.generateDungeon();
     this.modifyDungeon();
 
@@ -87,12 +87,12 @@ class dungeon {
 
         }
         //console.log(this.level);
-        console.log(headX + ", " + headY + ", " + headDir);
+        //console.log(headX + ", " + headY + ", " + headDir);
         this.level[headY][headX] = 1;
 
       }
     }
-    console.log(this.level);
+    console.log("Level Data: " + this.level);
 
 
 
