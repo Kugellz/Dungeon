@@ -26,8 +26,7 @@ class BasePlayScene extends Phaser.Scene{
     //this.matter.world.createDebugGraphic();
     this.createDungeon(0,0);
 
-    //this.cameras.main.setBounds(0,0,this.map.widthInPixels,this.map.heightInPixels);
-    //this.matter.world.setBounds(0,0,this.map.widthInPixels * 2.5,this.map.heightInPixels * 2.5);
+
     console.log(this.dungeon.spawn.x);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
     this.playerColCat = this.matter.world.nextCategory();
@@ -54,6 +53,12 @@ class BasePlayScene extends Phaser.Scene{
 
     });
 
+    if (this.enemies) {
+      for (var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].setPlayer();
+      }
+    }
+
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
@@ -67,10 +72,6 @@ class BasePlayScene extends Phaser.Scene{
         this.enemies[i].update();
       }
     }
-
-
-
-
   }
   createDungeon(x,y){
     this.dungeon = new dungeon(11,15,4,1,this);
@@ -98,7 +99,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: true
+        debug: false
       }
     },
     scene: [MenuScene,BasePlayScene],

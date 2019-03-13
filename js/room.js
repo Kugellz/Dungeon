@@ -115,6 +115,7 @@ class BaseRoom {
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
     var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
+    enemy.create();
     this.scene.enemies.push(enemy);
   }
 
