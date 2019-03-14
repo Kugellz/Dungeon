@@ -94,7 +94,7 @@ class dungeon {
     }
     console.log("Level Data: " + this.level);
 
-
+    
 
 
   }

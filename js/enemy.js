@@ -7,10 +7,13 @@ class Enemy{
     .setOrigin(0.5, 0.6)
     .setFixedRotation()
     .setAngle(0)
-    .setMass(100)
-    .setFrictionAir(0.1);
+    .setMass(8)
+    .setFrictionAir(0.1)
+    .depth = 1;
     this.XVEL = Phaser.Math.RND.pick([1,-1]);
     this.YVEL = Phaser.Math.RND.pick([1,-1]);
+    this.temp = true;
+    this.LOSRadius = 700;
   }
   create(){
 
@@ -23,13 +26,28 @@ class Enemy{
     var currentPos = new Phaser.Math.Vector2(this.sprite.x,this.sprite.y);
     var targetPos = new Phaser.Math.Vector2(this.target.x,this.target.y);
     var distance = currentPos.distance(targetPos);
-    var moveVect = new Phaser.Math.Vector2(currentPos.x - targetPos.x,currentPos.y - targetPos.y).normalize();
-    console.log(this.sprite.body.velocity);
+    var moveVect = new Phaser.Math.Vector2(targetPos.x - currentPos.x,targetPos.y - currentPos.y)
+    .normalize()
+    .scale(0.005);
+    //console.log(distance);
 
-    if (this.sprite.body.velocity.x<1 && this.sprite.body.velocity.y < 1) {
-      this.sprite.thrustRight(moveVect.x);
-      this.sprite.thrustBack(-moveVect.y);
+    if (distance < this.LOSRadius) {
+      this.sprite.applyForce({x:moveVect.x,y:moveVect.y});
+      if (moveVect.x < 0) {
+        this.sprite.setFlipX(true);
+      } else {
+        this.sprite.setFlipX(false);
+      }
     }
+
+    this.velocity = new Phaser.Math.Vector2(this.sprite.body.velocity.x,this.sprite.body.velocity.y);
+    if (this.velocity.length() < 0.1) {
+      this.sprite.anims.play('enemyIdle', true);
+    } else {
+      this.sprite.anims.play('enemyWalk', true);
+    }
+
+
 
   }
 }

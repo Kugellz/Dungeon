@@ -114,9 +114,13 @@ class BaseRoom {
     this.tops = topMap.createStaticLayer(0, this.topTiles, this.readX, this.readY - 16 * 5).setScale(5);
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
-    var enemy = new Enemy(this.scene,this.x + 400,this.y + 400);
-    enemy.create();
-    this.scene.enemies.push(enemy);
+
+    var number = Phaser.Math.RND.between(0, 4);
+    for (var i = 0; i < number; i++) {
+      var enemy = new Enemy(this.scene, this.x + 100,this.y + 100);
+      enemy.create();
+      this.scene.enemies.push(enemy);
+    }
   }
 
   createArray() {

@@ -29,10 +29,15 @@ class BasePlayScene extends Phaser.Scene{
 
     console.log(this.dungeon.spawn.x);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
+
+    
+
+
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    //ANIMATION LOADER
     this.anims.create({
         key: 'idle',
         frames: this.anims.generateFrameNumbers('knight', { start: 0, end: 3 }),
@@ -43,6 +48,18 @@ class BasePlayScene extends Phaser.Scene{
         key: 'walk',
         frames: this.anims.generateFrameNumbers('knight', { start: 4, end: 8 }),
         frameRate: 8,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'enemyIdle',
+        frames: this.anims.generateFrameNumbers('enemy', { start: 0, end: 3 }),
+        frameRate: 5,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'enemyWalk',
+        frames: this.anims.generateFrameNumbers('enemy', { start: 6, end: 9 }),
+        frameRate: 6,
         repeat: -1
     });
 
