@@ -69,11 +69,13 @@ class BasePlayScene extends Phaser.Scene{
       var nameA = bodyA.gameObject.name;
       var nameB = bodyB.gameObject.name;
       if ((nameA == "Enemy" && nameB == "Ball")) {
-        console.log("attempting damage from: " + this.player);
+        console.log("attempting damage from: " + nameB);
         if (this.player) {
           this.player.damage(bodyA.gameObject.parent);
         }
 
+      } else if((nameA == "Ball" && nameB == "Enemy")){
+        console.log("attempting damage from: " + nameA);
       }
 
     });

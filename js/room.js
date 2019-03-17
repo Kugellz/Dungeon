@@ -1,12 +1,12 @@
 class BaseRoom {
-  constructor(x, y, width, height, values, doorCount, scene) {
+  constructor(x, y, width, height, values, maxEnemy, scene) {
     this.scene = scene;
     this.x = x;
     this.y = y;
     this.readX = x - (width / 2) * 16 * 5;
     this.readY = y - (height / 2) * 16 * 5;
     this.values = values;
-    this.doorCount = doorCount;
+    this.maxEnemies = maxEnemy;
     //this.name = tileDataKey;
     //this.tileDataKey = tileDataKey;
     //this.tileDataSource = tileDataSource;
@@ -115,7 +115,8 @@ class BaseRoom {
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
 
-    var number = Phaser.Math.RND.between(0, 4);
+    
+    var number = Phaser.Math.RND.between(0, this.maxEnemies);
     for (var i = 0; i < number; i++) {
       var enemy = new Enemy(this.scene, this.x + 100,this.y + 100);
       enemy.create();

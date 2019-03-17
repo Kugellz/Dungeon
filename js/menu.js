@@ -5,13 +5,23 @@ class MenuScene extends Phaser.Scene{
   preload(){
     this.load.image('button','assets/button.png');
     this.load.image('Title','assets/Title.png');
-    this.load.image('StartScreen','assets/StartScreen.png');
+    this.load.spritesheet('StartScreen','assets/StartScreen.png',{ frameWidth: 128, frameHeight: 256 });
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
   }
   create(){
-    var bg = this.add.image(this.game.config.width/2 - 23, this.game.config.height/2 - 250, 'StartScreen', null).setScale(10);
+    //START IDLE ANIM
+    this.anims.create({
+        key: 'start',
+        frames: this.anims.generateFrameNumbers('StartScreen', { start: 0, end: 2 }),
+        frameRate: 4,
+        repeat: -1
+    });
+
+    var bg = this.add.sprite(this.game.config.width/2 - 23, this.game.config.height/2 - 250, 'StartScreen', null).setScale(10);
+    bg.anims.play("start");
     var start = this.matter.add.image(this.game.config.width/2 - 46, 700, 'button', null).setScale(8);
+
     start.setInteractive();
     start.once('pointerup',function(){
       console.log("buttonclicked");

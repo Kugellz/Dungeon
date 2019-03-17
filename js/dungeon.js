@@ -94,7 +94,7 @@ class dungeon {
     }
     console.log("Level Data: " + this.level);
 
-    
+
 
 
   }
@@ -103,6 +103,7 @@ class dungeon {
     for (var y = 0; y < this.size; y++) {
       for (var x = 0; x < this.size; x++) {
         var config = [1,1,1,1]
+        var enemies = 4;
         if (x == 0 || this.level[y][x-1] == 0) {
           config[0] = 0;
         }
@@ -116,9 +117,11 @@ class dungeon {
           config[3] = 0;
         }
         if (this.level[y][x] == 1) {
-          this.createRoom(x * this.grid,y * this.grid,16,16,config,4);
+          if (y==this.spawn.y/this.grid && x==this.spawn.x/this.grid) {
+            enemies = 0;
+          }
+          this.createRoom(x * this.grid,y * this.grid,16,16,config,enemies);
         }
-
         //console.log(x + ", " + y + ", " + config);
       }
     }
@@ -177,9 +180,10 @@ class dungeon {
 
 
 
-  createRoom(x, y, w, h, roomConfig, doorCount) {
-    var room = new BaseRoom(x, y, w, h, roomConfig, doorCount, this.scene);
+  createRoom(x, y, w, h, roomConfig, maxEnemy) {
+    var room = new BaseRoom(x, y, w, h, roomConfig, maxEnemy, this.scene);
     room.create();
     this.rooms.push(room);
+
   }
 }
