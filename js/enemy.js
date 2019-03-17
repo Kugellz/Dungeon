@@ -2,7 +2,8 @@ class Enemy{
   constructor(scene,x,y){
     this.scene = scene;
     this.sprite = this.scene.matter.add.sprite(x,y,'enemy',null, { shape: 'circle',radius:6});
-
+    this.sprite.setName("Enemy");
+    this.sprite.parent = this;
     this.sprite.setScale(5)
     .setOrigin(0.5, 0.6)
     .setFixedRotation()
@@ -14,6 +15,10 @@ class Enemy{
     this.YVEL = Phaser.Math.RND.pick([1,-1]);
     this.temp = true;
     this.LOSRadius = 700;
+    //HEALTH
+    this.maxHealth = 100;
+    this.health = this.maxHealth;
+
   }
   create(){
 

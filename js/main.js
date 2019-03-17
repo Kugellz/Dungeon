@@ -30,7 +30,7 @@ class BasePlayScene extends Phaser.Scene{
     console.log(this.dungeon.spawn.x);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
 
-    
+
 
 
     this.playerColCat = this.matter.world.nextCategory();
@@ -65,8 +65,16 @@ class BasePlayScene extends Phaser.Scene{
 
     //Collisions
     this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
+      //console.log(bodyA);
+      var nameA = bodyA.gameObject.name;
+      var nameB = bodyB.gameObject.name;
+      if ((nameA == "Enemy" && nameB == "Ball")) {
+        console.log("attempting damage from: " + this.player);
+        if (this.player) {
+          this.player.damage(bodyA.gameObject.parent);
+        }
 
-
+      }
 
     });
 
@@ -80,6 +88,7 @@ class BasePlayScene extends Phaser.Scene{
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
   }
+
   update(){
     if (this.player) {
       this.player.update();

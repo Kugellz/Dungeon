@@ -19,6 +19,7 @@ class Player{
     this.sprite.speed = 10;
     this.sprite.parent = this;
     this.sprite.depth = 1.1;
+    this.sprite.setName("Player");
     this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
@@ -155,6 +156,10 @@ class Player{
     this.mace.maceVector.set(this.mace.head.body.velocity.x,this.mace.head.body.velocity.y);
     //console.log(this.mace.maceVector.length());
   }
+  damage(object){
+    console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector);
+    object.health -= this.mace.maceVector;
+  }
 }
 
 class Mace{
@@ -187,9 +192,10 @@ class Mace{
     var ball = this.scene.matter.add.image(x, y, 'spikedBall', null, { shape: 'circle', mass: 0.01 });
     ball.setScale(3 * this.maceScale * this.ballScale);
     ball.setMass(10);
+    ball.setName("Ball")
     this.scene.matter.add.constraint(prev, ball,20 * this.maceScale * this.ballScale, 1);
     balls.push(ball);
-    this.head = ball
+    this.head = ball;
 
 
 
