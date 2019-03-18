@@ -115,8 +115,13 @@ class BaseRoom {
     this.tops.depth = 2;
     this.scene.matter.world.convertTilemapLayer(this.tops);
 
+    //ENEMIES
+      if (this.maxEnemies == 0) {
+          var number = 0;
+      } else {
+          var number = Phaser.Math.RND.between(1, this.maxEnemies);
+      }
     
-    var number = Phaser.Math.RND.between(0, this.maxEnemies);
     for (var i = 0; i < number; i++) {
       var enemy = new Enemy(this.scene, this.x + 100,this.y + 100);
       enemy.create();

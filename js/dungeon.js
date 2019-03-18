@@ -15,7 +15,11 @@ class dungeon {
     this.spawn = {
       x:0,
       y:0
-    };
+      };
+      this.exit = {
+          x: 0,
+          y: 0
+      };
   }
   create() {
     console.log("Constructing Dungeon");
@@ -32,11 +36,13 @@ class dungeon {
       var headX = Phaser.Math.FloorTo(this.size / 2);
       var headY = Phaser.Math.FloorTo(this.size / 2);
       this.spawn.x = headX * this.grid;
-      this.spawn.y = headY * this.grid;
+        this.spawn.y = headY * this.grid;
+        
       this.level[headY][headX] = 1;
       //var headDir = Phaser.Math.Between(0, 3);
       var headDir = i;
       for (var j = 0; j < 10; j++) {
+
 
         if (j%2 == 0) {
           headDir += Phaser.Math.Between(-1, 1);
@@ -89,6 +95,11 @@ class dungeon {
         //console.log(this.level);
         //console.log(headX + ", " + headY + ", " + headDir);
         this.level[headY][headX] = 1;
+
+          if (i == 4 && j == 9 ) {
+              this.exit.x = headX * this.grid;
+              this.exit.y = headY * this.grid;
+          }
 
       }
     }

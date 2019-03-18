@@ -15,7 +15,8 @@ class BasePlayScene extends Phaser.Scene{
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.image('ball','assets/ball.png');
     this.load.image('spikedBall','assets/spikeBall.png');
-    this.load.image('tilesheet','assets/tilesheet.png');
+    this.load.image('tilesheet', 'assets/tilesheet.png');
+    this.load.image('exit', 'assets/exit.png');
     this.load.tilemapTiledJSON('room1','assets/Level1.json');
     //this.load.tilemapTiledJSON('room2','assets/Level2.json');
     //this.load.tilemapTiledJSON('room3','assets/Level3.json');
@@ -27,7 +28,12 @@ class BasePlayScene extends Phaser.Scene{
     this.createDungeon(0,0);
 
 
-    console.log(this.dungeon.spawn.x);
+      console.log(this.dungeon.exit.x);
+      this.exit = this.matter.add.sprite(this.dungeon.exit.x, this.dungeon.exit.y, 'exit', null, null)
+          .setScale(5)
+          .setFixedRotation()
+          .setStatic(true);
+      this.exit.depth = 10;
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
 
 
