@@ -12,6 +12,7 @@ class BaseRoom {
     //this.tileDataSource = tileDataSource;
     this.width = width;
     this.height = height;
+    this.sensor = {};
 
     if (values[0] == 1) {
       this.left = true;
@@ -28,7 +29,7 @@ class BaseRoom {
 
   }
   create() {
-    console.log("Constructing Room");
+    console.log("Constructing Room at: " + this.x + ", " + this.y);
     const levelTest = [
       [0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0],
@@ -121,7 +122,22 @@ class BaseRoom {
       } else {
           var number = Phaser.Math.RND.between(1, this.maxEnemies);
       }
-    
+
+    this.createSensor();
+
+  }
+
+  createSensor(){
+    this.sensor = this.scene.matter.add.rectangle(this.x,this.y,13*16*5,13*16*5,{
+      isSensor:true,
+      label: 'room'
+    });
+    this.sensor.name = "room";
+    //console.log("made sensor: ");
+    //console.log(this.sensor);
+  }
+
+  createEnemies(){
     for (var i = 0; i < number; i++) {
       var enemy = new Enemy(this.scene, this.x + 100,this.y + 100);
       enemy.create();

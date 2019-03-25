@@ -70,31 +70,29 @@ class BasePlayScene extends Phaser.Scene{
     });
 
     //Collisions
-    this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
-      //console.log(bodyA);
-      var nameA = bodyA.gameObject.name;
-      var nameB = bodyB.gameObject.name;
-      if ((nameA == "Enemy" && nameB == "Ball")) {
-        console.log("attempting damage from: " + nameB);
-        if (this.player) {
-          this.player.damage(bodyA.gameObject.parent);
-        }
+    this.matter.world.on('collisionstart', this.Collision,this);
 
-      } else if((nameA == "Ball" && nameB == "Enemy")){
-        console.log("attempting damage from: " + nameA);
-      }
 
-    });
 
-    if (this.enemies) {
-      for (var i = 0; i < this.enemies.length; i++) {
-        this.enemies[i].setPlayer();
-      }
-    }
+    //CAMERA SETUP
 
     this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
+    this.cameras.main.setAlpha(1);
+    var miniCam = this.cameras.add(0, 0, 400, 400);
+    miniCam.setBackgroundColor('rgba(0,0,0,0)');
+    miniCam.setAlpha(1);
+    miniCam.ignore(this.player.graphics)
+    if (this.enemies) {
+      for (var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].setPlayer();
+        miniCam.ignore(this.enemies[i].sprite);
+      }
+    }
+    //miniCam.fadeEffect.alpha = 0;
+  //miniCam.fadeOut(10000,0,0,0);
+    miniCam.setZoom(0.1).startFollow(this.player.sprite,0.2,0.2);
   }
 
   update(){
@@ -107,6 +105,32 @@ class BasePlayScene extends Phaser.Scene{
       }
     }
   }
+
+  Collision(event, bodyA, bodyB) {
+  console.log(bodyA.label + ", " + bodyB.label);
+    if (bodyA && bodyB) {
+
+      var nameA = bodyA.label;
+      var nameB = bodyB.label;
+      if ((nameA == "Enemy" && nameB == "Ball")) {
+        console.log("attempting damage from: " + nameB);
+        if (this.player) {
+          this.player.damage(bodyA.gameObject.parent);
+
+        }
+
+      } else if((nameA == "Ball" && nameB == "Enemy")){
+        //console.log("attempting damage from: " + nameA);
+      } else if (nameA == "room" && nameB == "Player" || nameB == "room" && nameB == "Player") {
+        console.log("ROOM DETECT")
+      }
+    }
+
+
+
+
+  }
+
   createDungeon(x,y){
     this.dungeon = new dungeon(11,15,4,1,this);
     this.dungeon.create();

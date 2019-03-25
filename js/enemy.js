@@ -52,7 +52,16 @@ class Enemy{
       this.sprite.anims.play('enemyWalk', true);
     }
 
+    this.checkHealth();
 
-
+  }
+  checkHealth(){
+    if (this.health < 0) {
+      this.kill();
+    }
+  }
+  kill(){
+    Phaser.Utils.Array.Remove(this.scene.enemies,this);
+    this.sprite.destroy();
   }
 }

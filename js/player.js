@@ -6,7 +6,7 @@ class Player{
     this.sprite = this.scene.matter.add.sprite(x,y,'knight',null,null);
     this.sprite.setBody({
       type:'circle',
-      radius:8
+      radius:8,
     })
     .setOrigin(0.5, 0.7)
     .setScale(5)
@@ -19,6 +19,7 @@ class Player{
     this.sprite.speed = 10;
     this.sprite.parent = this;
     this.sprite.depth = 1.1;
+    this.sprite.body.label = 'Player';
     this.sprite.setName("Player");
     this.touching = false;
     //this.sprite.setCollisionCategory(this.spriteColCat)
@@ -157,8 +158,12 @@ class Player{
     //console.log(this.mace.maceVector.length());
   }
   damage(object){
-    console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector);
-    object.health -= this.mace.maceVector;
+    //console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector.length());
+    object.health -= this.mace.maceVector.length();
+    if (this.mace.maceVector.length() > 10) {
+      this.scene.cameras.main.shake(100,0.005);
+    }
+
   }
 }
 
@@ -175,7 +180,7 @@ class Mace{
     var prev = parent;
     for (var i = 0; i < length; i++)
     {
-        var ball = this.scene.matter.add.image(x, y, 'ball', null, { shape: 'circle', mass: 0.01 });
+        var ball = this.scene.matter.add.image(x, y, 'ball', null, { shape: 'circle', mass: 0.01, lable:'chain' });
 
         ball.setFrictionAir(0.000);
         ball.setScale(2 * this.maceScale);
@@ -189,7 +194,11 @@ class Mace{
 
         y += 20;
     }
-    var ball = this.scene.matter.add.image(x, y, 'spikedBall', null, { shape: 'circle', mass: 0.01 });
+    var ball = this.scene.matter.add.image(x, y, 'spikedBall', null, {
+      shape: 'circle',
+      mass: 0.01,
+    });
+    ball.body.label = 'Ball'
     ball.setScale(3 * this.maceScale * this.ballScale);
     ball.setMass(10);
     ball.setName("Ball")
