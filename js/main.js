@@ -14,6 +14,7 @@ class BasePlayScene extends Phaser.Scene{
     this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.image('ball','assets/ball.png');
+    this.load.image('door','assets/Door.png');
     this.load.image('spikedBall','assets/spikeBall.png');
     this.load.image('tilesheet', 'assets/tilesheet.png');
     this.load.image('exit', 'assets/exit.png');
@@ -33,7 +34,7 @@ class BasePlayScene extends Phaser.Scene{
           .setScale(5)
           .setFixedRotation()
           .setStatic(true);
-      this.exit.depth = 10;
+      this.exit.depth = 1;
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
 
 
@@ -80,19 +81,14 @@ class BasePlayScene extends Phaser.Scene{
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
     this.cameras.main.setAlpha(1);
-    var miniCam = this.cameras.add(0, 0, 400, 400);
-    miniCam.setBackgroundColor('rgba(0,0,0,0)');
-    miniCam.setAlpha(1);
-    miniCam.ignore(this.player.graphics)
-    if (this.enemies) {
-      for (var i = 0; i < this.enemies.length; i++) {
-        this.enemies[i].setPlayer();
-        miniCam.ignore(this.enemies[i].sprite);
-      }
-    }
+    this.miniCam = this.cameras.add(0, 0, 400, 400);
+    this.miniCam.setBackgroundColor('rgba(0,0,0,0)');
+    this.miniCam.setAlpha(1);
+    this.miniCam.ignore(this.player.graphics)
+
     //miniCam.fadeEffect.alpha = 0;
   //miniCam.fadeOut(10000,0,0,0);
-    miniCam.setZoom(0.1).startFollow(this.player.sprite,0.2,0.2);
+    this.miniCam.setZoom(0.1).startFollow(this.player.sprite,0.2,0.2);
   }
 
   update(){
@@ -120,9 +116,18 @@ class BasePlayScene extends Phaser.Scene{
         }
 
       } else if((nameA == "Ball" && nameB == "Enemy")){
-        //console.log("attempting damage from: " + nameA);
-      } else if (nameA == "room" && nameB == "Player" || nameB == "room" && nameB == "Player") {
+        console.log("attempting damage from: " + nameB);
+        if (this.player) {
+          this.player.damage(bodyB.gameObject.parent);
+
+        }
+
+      } else if (nameA == "room" && nameB == "Player") {
         console.log("ROOM DETECT")
+        bodyA.parent.playerEntered();
+      } else if (nameB == "room" && nameA == "Player") {
+        console.log("ROOM DETECT")
+        bodyB.parent.playerEntered();
       }
     }
 

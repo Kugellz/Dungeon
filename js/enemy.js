@@ -1,5 +1,5 @@
 class Enemy{
-  constructor(scene,x,y){
+  constructor(scene,x,y,origin){
     this.scene = scene;
     this.sprite = this.scene.matter.add.sprite(x,y,'enemy',null, { shape: 'circle',radius:6});
     this.sprite.setName("Enemy");
@@ -11,10 +11,12 @@ class Enemy{
     .setMass(8)
     .setFrictionAir(0.1)
     .depth = 1;
+    this.sprite.body.label = 'Enemy';
     this.XVEL = Phaser.Math.RND.pick([1,-1]);
     this.YVEL = Phaser.Math.RND.pick([1,-1]);
     this.temp = true;
     this.LOSRadius = 700;
+    this.originRoom = origin;
     //HEALTH
     this.maxHealth = 100;
     this.health = this.maxHealth;
@@ -62,6 +64,8 @@ class Enemy{
   }
   kill(){
     Phaser.Utils.Array.Remove(this.scene.enemies,this);
+    Phaser.Utils.Array.Remove(this.originRoom.enemies,this);
+    this.originRoom.checkEnemyCount();
     this.sprite.destroy();
   }
 }

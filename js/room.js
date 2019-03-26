@@ -5,14 +5,20 @@ class BaseRoom {
     this.y = y;
     this.readX = x - (width / 2) * 16 * 5;
     this.readY = y - (height / 2) * 16 * 5;
+    this.grid = 16 * 16 * 5;
     this.values = values;
     this.maxEnemies = maxEnemy;
-    //this.name = tileDataKey;
-    //this.tileDataKey = tileDataKey;
-    //this.tileDataSource = tileDataSource;
+    this.enemies = [];
+    //Player detect
+    this.locked = false;
+    this.completed = false;
+    this.sensor = {};
+    this.doors = [];
+
+
     this.width = width;
     this.height = height;
-    this.sensor = {};
+
 
     if (values[0] == 1) {
       this.left = true;
@@ -117,31 +123,131 @@ class BaseRoom {
     this.scene.matter.world.convertTilemapLayer(this.tops);
 
     //ENEMIES
-      if (this.maxEnemies == 0) {
-          var number = 0;
-      } else {
-          var number = Phaser.Math.RND.between(1, this.maxEnemies);
-      }
+    if (this.maxEnemies != 0) {
+      this.createDoors();
+    }
+
+
+
 
     this.createSensor();
+    //CREATE END --------------------------------------------------------------------
+  }
+
+  playerEntered(){
+    this.locked = true;
+    if (this.completed == false) {
+      this.lock();
+      this.createEnemies();
+      this.completed = true;
+    }
 
   }
 
+  checkEnemyCount(){
+    if (this.enemies.length <= 0) {
+      this.unlock();
+    }
+  }
+
+  lock(){
+    console.log("LOCKING");
+    for (var i = 0; i < this.doors.length; i++) {
+      this.doors[i]
+      .setSensor(false)
+      .setVisible(true);
+    }
+  }
+  unlock(){
+    console.log("UNLOCKING");
+    for (var i = 0; i < this.doors.length; i++) {
+      this.doors[i]
+      .setSensor(true)
+      .setVisible(false);
+    }
+  }
+
   createSensor(){
-    this.sensor = this.scene.matter.add.rectangle(this.x,this.y,13*16*5,13*16*5,{
+    this.sensor = this.scene.matter.add.rectangle(this.x,this.y,12*16*5,12*16*5,{
       isSensor:true,
       label: 'room'
     });
     this.sensor.name = "room";
+    this.sensor.parent = this;
     //console.log("made sensor: ");
     //console.log(this.sensor);
   }
 
+  createDoors(){
+    if (this.right) {
+      var x = this.x + 8 * 16 * 5;
+      var y = this.y;
+      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
+      .setScale(5)
+      .setFixedRotation()
+      .setAngle(0)
+      .setStatic(true)
+      .setSensor(true)
+      .setVisible(false);
+      door.depth = 1.1;
+      this.doors.push(door);
+    }
+    if (this.left) {
+      var x = this.x - 8 * 16 * 5;
+      var y = this.y;
+      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
+      .setScale(5)
+      .setFixedRotation()
+      .setAngle(0)
+      .setStatic(true)
+      .setSensor(true)
+      .setVisible(false);
+      door.depth = 1.1;
+      this.doors.push(door);
+    }
+    if (this.up) {
+      var x = this.x;
+      var y = this.y - 8 * 16 * 5;
+      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
+      .setScale(5)
+      .setFixedRotation()
+      .setAngle(0)
+      .setStatic(true)
+      .setSensor(true)
+      .setVisible(false);
+      door.depth = 1.1;
+      this.doors.push(door);
+    }
+    if (this.down) {
+      var x = this.x;
+      var y = this.y + 8 * 16 * 5;
+      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
+      .setScale(5)
+      .setFixedRotation()
+      .setAngle(0)
+      .setStatic(true)
+      .setSensor(true)
+      .setVisible(false);
+      door.depth = 1.1;
+      this.doors.push(door);
+    }
+
+
+  }
+
   createEnemies(){
+    if (this.maxEnemies == 0) {
+        var number = 0;
+    } else {
+        var number = Phaser.Math.RND.between(1, this.maxEnemies);
+    }
     for (var i = 0; i < number; i++) {
-      var enemy = new Enemy(this.scene, this.x + 100,this.y + 100);
+      var enemy = new Enemy(this.scene, this.x + 100,this.y + 100,this);
       enemy.create();
+      enemy.setPlayer();
+      this.scene.miniCam.ignore(enemy.sprite);
       this.scene.enemies.push(enemy);
+      this.enemies.push(enemy);
     }
   }
 
