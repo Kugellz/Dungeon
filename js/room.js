@@ -127,9 +127,6 @@ class BaseRoom {
       this.createDoors();
     }
 
-
-
-
     this.createSensor();
     //CREATE END --------------------------------------------------------------------
   }
@@ -156,6 +153,7 @@ class BaseRoom {
       this.doors[i]
       .setSensor(false)
       .setVisible(true);
+      this.doors[i].body.label = 'Door';
     }
   }
   unlock(){
@@ -164,6 +162,7 @@ class BaseRoom {
       this.doors[i]
       .setSensor(true)
       .setVisible(false);
+      this.doors[i].body.label = 'InvisDoor';
     }
   }
 
@@ -182,57 +181,37 @@ class BaseRoom {
     if (this.right) {
       var x = this.x + 8 * 16 * 5;
       var y = this.y;
-      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
-      .setScale(5)
-      .setFixedRotation()
-      .setAngle(0)
-      .setStatic(true)
-      .setSensor(true)
-      .setVisible(false);
-      door.depth = 1.1;
-      this.doors.push(door);
+      this.createDoor(x,y);
     }
     if (this.left) {
       var x = this.x - 8 * 16 * 5;
       var y = this.y;
-      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
-      .setScale(5)
-      .setFixedRotation()
-      .setAngle(0)
-      .setStatic(true)
-      .setSensor(true)
-      .setVisible(false);
-      door.depth = 1.1;
-      this.doors.push(door);
+      this.createDoor(x,y);
     }
     if (this.up) {
       var x = this.x;
       var y = this.y - 8 * 16 * 5;
-      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
-      .setScale(5)
-      .setFixedRotation()
-      .setAngle(0)
-      .setStatic(true)
-      .setSensor(true)
-      .setVisible(false);
-      door.depth = 1.1;
-      this.doors.push(door);
+      this.createDoor(x,y);
     }
     if (this.down) {
       var x = this.x;
       var y = this.y + 8 * 16 * 5;
-      var door = this.scene.matter.add.sprite(x,y,'door',null,null)
-      .setScale(5)
-      .setFixedRotation()
-      .setAngle(0)
-      .setStatic(true)
-      .setSensor(true)
-      .setVisible(false);
-      door.depth = 1.1;
-      this.doors.push(door);
+      this.createDoor(x,y);
     }
 
 
+  }
+  createDoor(x,y){
+    var door = this.scene.matter.add.sprite(x,y,'door',null,null)
+    .setScale(5)
+    .setFixedRotation()
+    .setAngle(0)
+    .setStatic(true)
+    .setSensor(true)
+    .setVisible(false);
+    door.body.label = 'InvisDoor';
+    door.depth = 1.1;
+    this.doors.push(door);
   }
 
   createEnemies(){

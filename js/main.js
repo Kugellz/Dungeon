@@ -77,7 +77,7 @@ class BasePlayScene extends Phaser.Scene{
 
     //CAMERA SETUP
 
-    this.cameras.main.startFollow(this.player.sprite,0.2,0.2);
+    this.cameras.main.startFollow(this.player.sprite,0.1,0.1);
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
     this.cameras.main.setAlpha(1);
@@ -109,17 +109,14 @@ class BasePlayScene extends Phaser.Scene{
       var nameA = bodyA.label;
       var nameB = bodyB.label;
       if ((nameA == "Enemy" && nameB == "Ball")) {
-        console.log("attempting damage from: " + nameB);
+        //console.log("attempting damage from: " + nameB);
         if (this.player) {
           this.player.damage(bodyA.gameObject.parent);
-
         }
-
       } else if((nameA == "Ball" && nameB == "Enemy")){
-        console.log("attempting damage from: " + nameB);
+        //console.log("attempting damage from: " + nameB);
         if (this.player) {
           this.player.damage(bodyB.gameObject.parent);
-
         }
 
       } else if (nameA == "room" && nameB == "Player") {
@@ -128,6 +125,14 @@ class BasePlayScene extends Phaser.Scene{
       } else if (nameB == "room" && nameA == "Player") {
         console.log("ROOM DETECT")
         bodyB.parent.playerEntered();
+      }
+      if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
+        var power = this.player.mace.maceVector.length();
+        console.log(power);
+        if("vibrate" in window.navigator && power > 5) {
+          console.log("VIBRATED");
+          window.navigator.vibrate([power*2,10,power]);
+        }
       }
     }
 

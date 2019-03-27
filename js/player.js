@@ -159,9 +159,12 @@ class Player{
   }
   damage(object){
     //console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector.length());
-    object.health -= this.mace.maceVector.length();
-    if (this.mace.maceVector.length() > 10) {
+    var power = this.mace.maceVector.length()
+    object.health -= power;
+    
+    if (power > 10) {
       this.scene.cameras.main.shake(200,0.003);
+
     }
 
   }
