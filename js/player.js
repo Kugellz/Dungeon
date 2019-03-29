@@ -25,6 +25,7 @@ class Player{
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
     this.mace = new Mace(this.sprite,5  ,1.2,1.5);
+    this.damageMultiplier = 10;
     //constructor(parent,length,scale,ballScale)
 
     //touchcontrols
@@ -81,7 +82,7 @@ class Player{
     this.graphics.clear();
     this.touchData = {};
     console.log("pointerDOWN");
-
+    console.log("PLAYER POS: " + this.sprite.x + ", " + this.sprite.y);
     this.touching = true;
     this.touchData.startX = pointer.x;
     this.touchData.startY = pointer.y;
@@ -160,8 +161,8 @@ class Player{
   damage(object){
     //console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector.length());
     var power = this.mace.maceVector.length()
-    object.health -= power;
-    
+    object.health -= power * this.damageMultiplier;
+
     if (power > 10) {
       this.scene.cameras.main.shake(200,0.003);
 
@@ -191,7 +192,7 @@ class Mace{
         this.scene.matter.add.constraint(prev, ball,24 * this.maceScale, 1);
 
         ball.setCollisionCategory(this.scene.maceColCat);
-
+        ball.depth = 1;
         balls.push(ball);
         prev = ball;
 
@@ -201,7 +202,8 @@ class Mace{
       shape: 'circle',
       mass: 0.01,
     });
-    ball.body.label = 'Ball'
+    ball.body.label = 'Ball';
+    ball.depth = 1;
     ball.setScale(3 * this.maceScale * this.ballScale);
     ball.setMass(10);
     ball.setName("Ball")

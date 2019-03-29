@@ -25,7 +25,7 @@ class dungeon {
     console.log("Constructing Dungeon");
     this.generateDungeon();
     this.modifyDungeon();
-
+    this.createBossRoom(-3000,-3000);
 
   }
 
@@ -37,11 +37,11 @@ class dungeon {
       var headY = Phaser.Math.FloorTo(this.size / 2);
       this.spawn.x = headX * this.grid;
         this.spawn.y = headY * this.grid;
-        
+
       this.level[headY][headX] = 1;
       //var headDir = Phaser.Math.Between(0, 3);
       var headDir = i;
-      for (var j = 0; j < 10; j++) {
+      for (var j = 0; j < 8; j++) {
 
 
         if (j%2 == 0) {
@@ -96,7 +96,7 @@ class dungeon {
         //console.log(headX + ", " + headY + ", " + headDir);
         this.level[headY][headX] = 1;
 
-          if (i == 4 && j == 9 ) {
+          if (i == 4 && j == 0 ) {
               this.exit.x = headX * this.grid;
               this.exit.y = headY * this.grid;
           }
@@ -189,7 +189,10 @@ class dungeon {
     return level;
   }
 
-
+  createBossRoom(x,y){
+    this.bossRoom = new bossRoom(x,y,this.scene)
+    this.bossRoom.create();
+  }
 
   createRoom(x, y, w, h, roomConfig, maxEnemy) {
     var room = new BaseRoom(x, y, w, h, roomConfig, maxEnemy, this.scene);

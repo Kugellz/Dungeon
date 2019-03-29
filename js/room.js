@@ -106,6 +106,7 @@ class BaseRoom {
       tileWidth: 16,
       tileHeight: 16
     });
+    this.wallMap = wallMap;
     this.wallTiles = wallMap.addTilesetImage('tilesheet');
     this.walls = wallMap.createStaticLayer(0, this.wallTiles, this.readX, this.readY).setScale(5);
     this.walls.depth = 0;

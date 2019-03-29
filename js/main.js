@@ -29,12 +29,8 @@ class BasePlayScene extends Phaser.Scene{
     this.createDungeon(0,0);
 
 
-      console.log(this.dungeon.exit.x);
-      this.exit = this.matter.add.sprite(this.dungeon.exit.x, this.dungeon.exit.y, 'exit', null, null)
-          .setScale(5)
-          .setFixedRotation()
-          .setStatic(true);
-      this.exit.depth = 1;
+      console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
+
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
 
 
@@ -103,7 +99,7 @@ class BasePlayScene extends Phaser.Scene{
   }
 
   Collision(event, bodyA, bodyB) {
-  console.log(bodyA.label + ", " + bodyB.label);
+  //console.log(bodyA.label + ", " + bodyB.label);
     if (bodyA && bodyB) {
 
       var nameA = bodyA.label;
@@ -120,17 +116,19 @@ class BasePlayScene extends Phaser.Scene{
         }
 
       } else if (nameA == "room" && nameB == "Player") {
-        console.log("ROOM DETECT")
+        //console.log("ROOM DETECT")
         bodyA.parent.playerEntered();
       } else if (nameB == "room" && nameA == "Player") {
-        console.log("ROOM DETECT")
+        //console.log("ROOM DETECT")
         bodyB.parent.playerEntered();
+      } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
+        this.startBossFight();
       }
       if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
         var power = this.player.mace.maceVector.length();
         console.log(power);
         if("vibrate" in window.navigator && power > 5) {
-          console.log("VIBRATED");
+          //console.log("VIBRATED");
           window.navigator.vibrate([power*2,10,power]);
         }
       }
@@ -144,8 +142,37 @@ class BasePlayScene extends Phaser.Scene{
   createDungeon(x,y){
     this.dungeon = new dungeon(11,15,4,1,this);
     this.dungeon.create();
+    this.createStairs();
   }
 
+  createStairs(){
+    this.exit = this.matter.add.sprite(this.dungeon.exit.x, this.dungeon.exit.y, 'exit', null, null)
+        .setScale(5)
+        .setFixedRotation()
+        .setStatic(true)
+        .setSensor(true);
+    this.exit.depth = 1;
+    this.exit.body.label = "Exit";
+  }
+
+  startBossFight(){
+    this.cameras.main.fadeOut(1000,0,0,0,false);
+    console.log("FADING OUT");
+
+    this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+
+      this.player.sprite.x = this.dungeon.bossRoom.x;
+      this.player.sprite.y = this.dungeon.bossRoom.y + 100;
+      this.player.sprite.setVelocity(0,0);
+
+      console.log("FADING IN");
+
+
+      camera.fadeIn(6000, 255);
+
+    }, this);
+
+  }
 
 }
 
