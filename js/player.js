@@ -11,17 +11,23 @@ class Player{
     .setOrigin(0.5, 0.7)
     .setScale(5)
     .setFixedRotation()
-    .setAngle(0)
+    .setAngle(0);
+
     this.sprite.setMass(10);
     this.sprite.XVEL = 0;
     this.sprite.YVEL = 0;
     this.sprite.maxSpeed = 20;
     this.sprite.speed = 10;
     this.sprite.parent = this;
-    this.sprite.depth = 1.1;
+    this.sprite.depth = 1.3;
     this.sprite.body.label = 'Player';
     this.sprite.setName("Player");
+
+    this.shadow = this.scene.add.image(x,y,'shadow',null,null).setScale(5);
+    this.shadow.depth = 1.1;
+
     this.touching = false;
+    this.touchEnabled = true;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
     this.mace = new Mace(this.sprite,5  ,1.2,1.5);
@@ -75,14 +81,14 @@ class Player{
       this.sprite.flipX = true;
     }
     this.sprite.setVelocity(vector.x*this.sprite.speed,vector.y*this.sprite.speed);
-
+    this.shadow.setPosition(this.sprite.x,this.sprite.y+5);
   }
   //touchHandlers-------------------------------------------------------
   handlePointerDown(pointer){
     this.graphics.clear();
     this.touchData = {};
-    console.log("pointerDOWN");
-    console.log("PLAYER POS: " + this.sprite.x + ", " + this.sprite.y);
+
+
     this.touching = true;
     this.touchData.startX = pointer.x;
     this.touchData.startY = pointer.y;
@@ -95,7 +101,7 @@ class Player{
     this.updateTouch();
   }
   handlePointerUp(pointer){
-    console.log("pointerUP");
+
     this.touching = false;
     this.graphics.clear();
     this.touchData = {};
@@ -106,17 +112,17 @@ class Player{
 
   updateTouch(){
     this.graphics.clear();
-
+    const graphicsSize = 80;
     const distX = this.touchData.currentX - this.touchData.startX;
     const distY = this.touchData.currentY - this.touchData.startY;
 
-    var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, 100);
+    var circle = new Phaser.Geom.Circle(this.touchData.startX, this.touchData.startY, graphicsSize);
     if (this.touching) {
       var line = new Phaser.Geom.Line(this.touchData.startX, this.touchData.startY, this.touchData.currentX, this.touchData.currentY);
       var normalAngle = Phaser.Geom.Line.NormalAngle(line);
       var tangent = new Phaser.Geom.Line(
-        this.touchData.startX + Math.cos(normalAngle) * 100, this.touchData.startY + Math.sin(normalAngle) * 100,
-        this.touchData.startX + Math.cos(normalAngle) * -100, this.touchData.startY + Math.sin(normalAngle) * -100
+        this.touchData.startX + Math.cos(normalAngle) * graphicsSize, this.touchData.startY + Math.sin(normalAngle) * graphicsSize,
+        this.touchData.startX + Math.cos(normalAngle) * -graphicsSize, this.touchData.startY + Math.sin(normalAngle) * -graphicsSize
       );
       //triangle
       var a = new Phaser.Geom.Point(tangent.x1, tangent.y1);
@@ -136,28 +142,38 @@ class Player{
 
     //console.log(distX);
 
-    const tolerance = 25;
-    if (distX > 0 + tolerance) {
-      this.sprite.XVEL = distX/10;
-    } else if (distX < 0 - tolerance) {
-      this.sprite.XVEL = distX/10;
+    if (this.touchEnabled) {
+      const tolerance = 25;
+      if (distX > 0 + tolerance) {
+        this.sprite.XVEL = distX/10;
+      } else if (distX < 0 - tolerance) {
+        this.sprite.XVEL = distX/10;
+      } else {
+        this.sprite.XVEL = 0;
+      }
+      if (distY > 0 + tolerance) {
+        this.sprite.YVEL = distY/10;
+      } else if (distY < 0 - tolerance) {
+        this.sprite.YVEL = distY/10;
+      } else {
+        this.sprite.YVEL = 0;
+      }
     } else {
       this.sprite.XVEL = 0;
-    }
-    if (distY > 0 + tolerance) {
-      this.sprite.YVEL = distY/10;
-    } else if (distY < 0 - tolerance) {
-      this.sprite.YVEL = distY/10;
-    } else {
       this.sprite.YVEL = 0;
+      //this.graphics.clear();
     }
+
+
   }
   //-----------------------------------------
-  updateMaceData(){
-    this.mace.maceVector = new Phaser.Math.Vector2()
-    this.mace.maceVector.set(this.mace.head.body.velocity.x,this.mace.head.body.velocity.y);
-    //console.log(this.mace.maceVector.length());
+  disableTouch(){
+    this.touchEnabled = false;
   }
+  enableTouch(){
+    this.touchEnabled = true;
+  }
+
   damage(object){
     //console.log("DAMAGE ENEMY WITH: " + this.mace.maceVector.length());
     var power = this.mace.maceVector.length()
@@ -169,6 +185,19 @@ class Player{
     }
 
   }
+  updateMaceData(){
+    this.mace.maceVector = new Phaser.Math.Vector2()
+    this.mace.maceVector.set(this.mace.head.body.velocity.x,this.mace.head.body.velocity.y);
+    this.mace.shadow.setPosition(this.mace.head.x,this.mace.head.y + 5 + this.mace.maceVector.length());
+    //console.log(this.mace.maceVector.length());
+  }
+  changePlayerPos(x,y){
+    this.sprite.setPosition(x,y);
+    for (var i = 0; i < this.mace.balls.length; i++) {
+      this.mace.balls[i].setPosition(x,y+100);
+    }
+    this.mace.head.setPosition(x,y+100);
+  }
 }
 
 class Mace{
@@ -177,6 +206,9 @@ class Mace{
       this.maceScale = scale;
       this.ballScale = ballScale;
     this.maceVector;
+
+    this.shadow = this.scene.add.image(x,y,'shadow',null,null).setScale(5);
+    this.shadow.depth = 1.1;
     //-------------------
     var y = parent.y;
     var x = parent.x;
@@ -192,7 +224,7 @@ class Mace{
         this.scene.matter.add.constraint(prev, ball,24 * this.maceScale, 1);
 
         ball.setCollisionCategory(this.scene.maceColCat);
-        ball.depth = 1;
+        ball.depth = 1.2;
         balls.push(ball);
         prev = ball;
 
@@ -203,12 +235,13 @@ class Mace{
       mass: 0.01,
     });
     ball.body.label = 'Ball';
-    ball.depth = 1;
+    ball.depth = 1.2;
     ball.setScale(3 * this.maceScale * this.ballScale);
     ball.setMass(10);
     ball.setName("Ball")
     this.scene.matter.add.constraint(prev, ball,20 * this.maceScale * this.ballScale, 1);
     balls.push(ball);
+    this.balls = balls;
     this.head = ball;
 
 

@@ -17,6 +17,7 @@ class Enemy{
     this.temp = true;
     this.LOSRadius = 700;
     this.originRoom = origin;
+    this.paused = false;
     //HEALTH
     this.maxHealth = 100;
     this.health = this.maxHealth;
@@ -38,7 +39,7 @@ class Enemy{
     .scale(0.005);
     //console.log(distance);
 
-    if (distance < this.LOSRadius) {
+    if (distance < this.LOSRadius && this.paused == false) {
       this.sprite.applyForce({x:moveVect.x,y:moveVect.y});
       if (moveVect.x < 0) {
         this.sprite.setFlipX(true);
@@ -61,6 +62,13 @@ class Enemy{
     if (this.health < 0) {
       this.kill();
     }
+  }
+  pause(){
+    this.paused = true;
+    this.sprite.setVelocity(0,0);
+  }
+  unPause(){
+    this.paused = false;
   }
   kill(){
     Phaser.Utils.Array.Remove(this.scene.enemies,this);

@@ -6,6 +6,7 @@ class BasePlayScene extends Phaser.Scene{
     this.tileDataSource;
     this.dungeon;
     this.enemies = [];
+    this.paused = false;
 
     console.log("ITS WORKING");
     this.cursors;
@@ -18,23 +19,18 @@ class BasePlayScene extends Phaser.Scene{
     this.load.image('spikedBall','assets/spikeBall.png');
     this.load.image('tilesheet', 'assets/tilesheet.png');
     this.load.image('exit', 'assets/exit.png');
+    this.load.image('pause', 'assets/pause.png');
+    this.load.image('shadow', 'assets/shadow.png');
     this.load.tilemapTiledJSON('room1','assets/Level1.json');
     //this.load.tilemapTiledJSON('room2','assets/Level2.json');
     //this.load.tilemapTiledJSON('room3','assets/Level3.json');
   }
   create(){
     console.log(this);
-
     //this.matter.world.createDebugGraphic();
     this.createDungeon(0,0);
-
-
-      console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
-
+    console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
-
-
-
 
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
@@ -69,22 +65,19 @@ class BasePlayScene extends Phaser.Scene{
     //Collisions
     this.matter.world.on('collisionstart', this.Collision,this);
 
-
-
     //CAMERA SETUP
 
-    this.cameras.main.startFollow(this.player.sprite,0.1,0.1);
+    this.cameras.main.startFollow(this.player.sprite,0.8,0.8);
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
     this.cameras.main.setAlpha(1);
     this.miniCam = this.cameras.add(0, 0, 400, 400);
     this.miniCam.setBackgroundColor('rgba(0,0,0,0)');
     this.miniCam.setAlpha(1);
-    this.miniCam.ignore(this.player.graphics)
-
-    //miniCam.fadeEffect.alpha = 0;
-  //miniCam.fadeOut(10000,0,0,0);
+    this.miniCam.ignore([this.player.graphics]);
     this.miniCam.setZoom(0.1).startFollow(this.player.sprite,0.2,0.2);
+
+    this.scene.add('pauseScene',PauseMenu,true,{mainScene:this});
   }
 
   update(){
@@ -122,7 +115,7 @@ class BasePlayScene extends Phaser.Scene{
         //console.log("ROOM DETECT")
         bodyB.parent.playerEntered();
       } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
-        this.startBossFight();
+        this.startFade();
       }
       if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
         var power = this.player.mace.maceVector.length();
@@ -138,7 +131,6 @@ class BasePlayScene extends Phaser.Scene{
 
 
   }
-
   createDungeon(x,y){
     this.dungeon = new dungeon(11,15,4,1,this);
     this.dungeon.create();
@@ -155,25 +147,42 @@ class BasePlayScene extends Phaser.Scene{
     this.exit.body.label = "Exit";
   }
 
-  startBossFight(){
-    this.cameras.main.fadeOut(1000,0,0,0,false);
+  startFade(){
+    this.cameras.main.fadeOut(500,0,0,0,false);
+    this.player.disableTouch();
+    this.player.sprite.setVelocity(0,0);
+    this.player.mace.head.setVelocity(0,0);
     console.log("FADING OUT");
 
     this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-
-      this.player.sprite.x = this.dungeon.bossRoom.x;
-      this.player.sprite.y = this.dungeon.bossRoom.y + 100;
       this.player.sprite.setVelocity(0,0);
-
+      this.player.mace.head.setVelocity(0,0);
+      this.player.changePlayerPos(this.dungeon.bossRoom.x,this.dungeon.bossRoom.y);
+      this.cameras.main.centerOn(this.player.sprite.x,this.player.sprite.y);
+      this.miniCam.setVisible(false);
+      this.player.sprite.setVelocity(0,0);
+      this.player.mace.head.setVelocity(0,0);
       console.log("FADING IN");
+      camera.fadeIn(1500, 0);
+    }, this);
 
-
-      camera.fadeIn(6000, 255);
-
+    this.cameras.main.once('camerafadeincomplete', function (camera) {
+      this.player.enableTouch();
+      this.startBossFight();
     }, this);
 
   }
+  startBossFight(){
+    this.clearEnemies();
+  }
 
+
+
+  clearEnemies(){
+    for (var i = 0; i < this.enemies.length; i++) {
+      this.enemies[i].kill();
+    }
+  }
 }
 
 

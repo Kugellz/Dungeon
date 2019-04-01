@@ -1,6 +1,6 @@
 class MenuScene extends Phaser.Scene{
   constructor(){
-    super();
+    super('menu');
   }
   preload(){
     this.load.image('button','assets/button.png');
