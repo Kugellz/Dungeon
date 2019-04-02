@@ -12,6 +12,10 @@ class Enemy{
     .setFrictionAir(0.1)
     .depth = 1;
     this.sprite.body.label = 'Enemy';
+
+    this.shadow = this.scene.add.image(x, y, 'shadow', null, null).setScale(5);
+    this.shadow.depth = 1.1;
+
     this.XVEL = Phaser.Math.RND.pick([1,-1]);
     this.YVEL = Phaser.Math.RND.pick([1,-1]);
     this.temp = true;
@@ -54,7 +58,7 @@ class Enemy{
     } else {
       this.sprite.anims.play('enemyWalk', true);
     }
-
+    this.shadow.setPosition(this.sprite.x, this.sprite.y + 10);
     this.checkHealth();
 
   }
@@ -75,5 +79,6 @@ class Enemy{
     Phaser.Utils.Array.Remove(this.originRoom.enemies,this);
     this.originRoom.checkEnemyCount();
     this.sprite.destroy();
+    this.shadow.destroy();
   }
 }

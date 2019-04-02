@@ -7,6 +7,8 @@ class BasePlayScene extends Phaser.Scene{
     this.dungeon;
     this.enemies = [];
     this.paused = false;
+    this.shader = 'warp';
+    this.shader2 = 'Transparent';
 
     console.log("ITS WORKING");
     this.cursors;
@@ -14,6 +16,7 @@ class BasePlayScene extends Phaser.Scene{
   preload(){
     this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
+    this.load.spritesheet('coin', 'assets/coin.png',{ frameWidth: 16, frameHeight: 16 });
     this.load.image('ball','assets/ball.png');
     this.load.image('door','assets/Door.png');
     this.load.image('spikedBall','assets/spikeBall.png');
@@ -31,6 +34,7 @@ class BasePlayScene extends Phaser.Scene{
     this.createDungeon(0,0);
     console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
+    this.coin = new Coin(this.dungeon.spawn.x,this.dungeon.spawn.y,this);
 
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
@@ -61,6 +65,12 @@ class BasePlayScene extends Phaser.Scene{
         frameRate: 6,
         repeat: -1
     });
+    this.anims.create({
+        key: 'coin',
+        frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 8 }),
+        frameRate: 24,
+        repeat: -1
+    });
 
     //Collisions
     this.matter.world.on('collisionstart', this.Collision,this);
@@ -71,11 +81,13 @@ class BasePlayScene extends Phaser.Scene{
     this.cameras.main.followOffset.y = -250;
     this.cameras.main.setZoom(1);
     this.cameras.main.setAlpha(1);
-    this.miniCam = this.cameras.add(0, 0, 400, 400);
+    this.miniCam = this.cameras.add(0, 0, 1000, 1000);
     this.miniCam.setBackgroundColor('rgba(0,0,0,0)');
     this.miniCam.setAlpha(1);
     this.miniCam.ignore([this.player.graphics]);
-    this.miniCam.setZoom(0.1).startFollow(this.player.sprite,0.2,0.2);
+    this.miniCam.setZoom(0.3).startFollow(this.player.sprite,0.2,0.2);
+
+    this.createShaders();
 
     this.scene.add('pauseScene',PauseMenu,true,{mainScene:this});
   }
@@ -89,6 +101,9 @@ class BasePlayScene extends Phaser.Scene{
         this.enemies[i].update();
       }
     }
+    this.coin.update();
+    this.pipeline.setFloat1('uTime', this.pipeTick); //A tickrate that increases by 0.01 per frame. Could also use update's own time parameter.
+    this.pipeTick += 0.01;
   }
 
   Collision(event, bodyA, bodyB) {
@@ -157,11 +172,12 @@ class BasePlayScene extends Phaser.Scene{
     this.cameras.main.once('camerafadeoutcomplete', function (camera) {
       this.player.sprite.setVelocity(0,0);
       this.player.mace.head.setVelocity(0,0);
-      this.player.changePlayerPos(this.dungeon.bossRoom.x,this.dungeon.bossRoom.y);
+      this.player.changePlayerPos(this.dungeon.bossRoom.x,this.dungeon.bossRoom.y + 1000);
       this.cameras.main.centerOn(this.player.sprite.x,this.player.sprite.y);
       this.miniCam.setVisible(false);
       this.player.sprite.setVelocity(0,0);
       this.player.mace.head.setVelocity(0,0);
+      this.player.YVEL = -1;
       console.log("FADING IN");
       camera.fadeIn(1500, 0);
     }, this);
@@ -176,18 +192,30 @@ class BasePlayScene extends Phaser.Scene{
     this.clearEnemies();
   }
 
-
-
   clearEnemies(){
     for (var i = 0; i < this.enemies.length; i++) {
       this.enemies[i].kill();
     }
   }
+
+  createShaders(){
+    this.pipeTick = 0.0;
+
+        this.pipeline = this.game.renderer.addPipeline(this.shader, new Warp(this.game));
+        this.pipeline.setFloat2('uResolution', game.config.width, game.config.height);
+        this.pipeline2 = this.game.renderer.addPipeline(this.shader2, new TemplateShader(this.game));
+
+
+        this.player.sprite.setPipeline(this.shader);
+        //this.cameras.main.setRenderToTexture(this.shader);
+        this.miniCam.setRenderToTexture(this.shader2);
+
+  }
 }
 
 
 var config = {
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     width: 1080,
     height: 2280,
     scale: {
