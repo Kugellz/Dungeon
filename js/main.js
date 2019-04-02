@@ -6,12 +6,18 @@ class BasePlayScene extends Phaser.Scene{
     this.tileDataSource;
     this.dungeon;
     this.enemies = [];
+    this.coins = [];
     this.paused = false;
     this.shader = 'warp';
     this.shader2 = 'Transparent';
-
-    console.log("ITS WORKING");
     this.cursors;
+    console.log("ITS WORKING");
+
+    this.data = {
+      coins:0,
+      kills:0,
+      time:0
+    }
   }
   preload(){
     this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
@@ -101,7 +107,11 @@ class BasePlayScene extends Phaser.Scene{
         this.enemies[i].update();
       }
     }
-    this.coin.update();
+    if (this.coins) {
+      for (var i = 0; i < this.coins.length; i++) {
+        this.coins[i].update();
+      }
+    }
     this.pipeline.setFloat1('uTime', this.pipeTick); //A tickrate that increases by 0.01 per frame. Could also use update's own time parameter.
     this.pipeTick += 0.01;
   }
@@ -126,12 +136,21 @@ class BasePlayScene extends Phaser.Scene{
       } else if (nameA == "room" && nameB == "Player") {
         //console.log("ROOM DETECT")
         bodyA.parent.playerEntered();
-      } else if (nameB == "room" && nameA == "Player") {
+      } else if (nameB == "room" && nameA == "Player") {   //ROOOOMSSS
         //console.log("ROOM DETECT")
         bodyB.parent.playerEntered();
       } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
         this.startFade();
+      } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
+        bodyA.gameObject.parent.destroy();
+        this.data.coins++;
+        console.log("COIN GET");
+      } else if (nameB == "Coin" && nameA == "Player") {
+        bodyB.gameObject.parent.destroy();
+        this.data.coins++;
+        console.log("COIN GET");
       }
+
       if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
         var power = this.player.mace.maceVector.length();
         console.log(power);

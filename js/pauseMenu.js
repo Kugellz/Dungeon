@@ -15,6 +15,7 @@ class PauseMenu extends Phaser.Scene{
       console.log("toggling pause");
       this.togglePause();
     },this);
+
     var graphics = this.add.graphics({ fillStyle: { color: 0x00000 } });
     var rect = new Phaser.Geom.Rectangle(0, 0, 1000, 3000);
     this.background = graphics.fillRectShape(rect).setAlpha(0);;
@@ -22,6 +23,14 @@ class PauseMenu extends Phaser.Scene{
       fontSize:150,
       color:'#d9a066',
       align:'centre'
+    }).setOrigin(0.5)
+    .setShadow(8, 8, "#663931", 2, false, true)
+    .setAlpha(0);
+
+    this.coins = this.add.text(0,0,"HELLO WORLD",{
+      fontSize:50,
+      color:'#d9a066',
+      //align:'centre'
     }).setOrigin(0.5)
     .setShadow(8, 8, "#663931", 2, false, true)
     .setAlpha(0);
@@ -34,7 +43,7 @@ class PauseMenu extends Phaser.Scene{
       this.pausedText.setAlpha(1);
       this.mainScene.scene.pause();
       for (var i = 0; i < this.mainScene.enemies.length; i++) {
-        this.enemies[i].pause();
+        this.mainScene.enemies[i].pause();
       }
 
     } else if (this.paused == true) {
@@ -43,7 +52,7 @@ class PauseMenu extends Phaser.Scene{
       this.pausedText.setAlpha(0);
       this.mainScene.scene.resume();
       for (var i = 0; i < this.mainScene.enemies.length; i++) {
-        this.enemies[i].unPause();
+        this.mainScene.enemies[i].unPause();
       }
     }
     console.log(this.paused);

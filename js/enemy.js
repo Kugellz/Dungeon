@@ -74,7 +74,15 @@ class Enemy{
   unPause(){
     this.paused = false;
   }
+  spawnCoins(){
+    for (var i = 0; i < 5; i++) {
+      var coin = new Coin(this.sprite.x,this.sprite.y,this.scene);
+      coin.create();
+      this.scene.coins.push(coin);
+    }
+  }
   kill(){
+    this.spawnCoins();
     Phaser.Utils.Array.Remove(this.scene.enemies,this);
     Phaser.Utils.Array.Remove(this.originRoom.enemies,this);
     this.originRoom.checkEnemyCount();
