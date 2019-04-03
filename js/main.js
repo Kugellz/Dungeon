@@ -35,12 +35,20 @@ class BasePlayScene extends Phaser.Scene{
     //this.load.tilemapTiledJSON('room3','assets/Level3.json');
   }
   create(){
-    console.log(this);
+    console.log(this.scene.scene.matter.world);
     //this.matter.world.createDebugGraphic();
     this.createDungeon(0,0);
-    console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
+    //console.log(this.dungeon.exit.x + ", " + this.dungeon.exit.y);
     this.player = new Player(this,this.dungeon.spawn.x,this.dungeon.spawn.y);
-    this.coin = new Coin(this.dungeon.spawn.x,this.dungeon.spawn.y,this);
+
+    this.coins = this.add.group({
+      classType: Coin,
+      maxSize: 50,
+      runChildUpdate:true,
+      config:{
+        scene:this.scene
+      }
+    });
 
     this.playerColCat = this.matter.world.nextCategory();
     this.maceColCat = this.matter.world.nextCategory();
@@ -142,18 +150,18 @@ class BasePlayScene extends Phaser.Scene{
       } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
         this.startFade();
       } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
-        bodyA.gameObject.parent.destroy();
+        bodyA.gameObject.destroy();
         this.data.coins++;
         console.log("COIN GET");
       } else if (nameB == "Coin" && nameA == "Player") {
-        bodyB.gameObject.parent.destroy();
+        bodyB.gameObject.destroy();
         this.data.coins++;
         console.log("COIN GET");
       }
 
       if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
         var power = this.player.mace.maceVector.length();
-        console.log(power);
+        //.log(power);
         if("vibrate" in window.navigator && power > 5) {
           //console.log("VIBRATED");
           window.navigator.vibrate([power*2,10,power]);

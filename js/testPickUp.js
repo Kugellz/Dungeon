@@ -1,4 +1,4 @@
-class PickUp extends Phaser.Physics.Matter.Sprite {
+class NewPickUp extends Phaser.Physics.Matter.Sprite {
   constructor(config,key,size) {
     super(config.scene.scene.matter.world,0,0,key,null,null);
     this.setScale(size);

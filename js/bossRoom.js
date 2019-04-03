@@ -15,12 +15,12 @@ class bossRoom {
 
   createRoom(){
     //for (var i = 0; i < 4; i++) {
-    console.log(this.scene);
+    //console.log(this.scene);
       var room = new BaseRoom(this.x,this.y, 32, 32, [0,0,0,0], 0, this.scene);
-      console.log(room);
+      //console.log(room);
 
       room.create();
-      console.log(room);
+      //console.log(room);
     //}
   }
 }

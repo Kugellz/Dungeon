@@ -23,9 +23,17 @@ class MenuScene extends Phaser.Scene{
     var start = this.matter.add.image(this.game.config.width/2 - 46, 700, 'button', null).setScale(8);
 
     start.setInteractive();
-    start.once('pointerup',function(){
+    start.on('pointerup',function(){
       console.log("buttonclicked");
-      this.scene.start('base');
+        this.scene.transition({
+        target:'base',
+        duration:500,
+        sleep:false,
+        allowInput:false,
+        moveBelow:true
+      });
+      this.cameras.main.fadeOut(500,0,0,0,false);
+
     },this);
     var title = this.matter.add.image(this.game.config.width/2 - 46, 300, 'Title', null).setScale(14);
 

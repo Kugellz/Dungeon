@@ -1,16 +1,17 @@
 class Coin extends PickUp {
-  constructor(x,y,scene) {
-    super(x,y,'coin',3,scene);
-    this.sprite.body.label = 'Coin';
+  constructor(config) {
+    super(config,'coin',2.5);
+    this.body.label = 'Coin';
   }
-  create(){
-    super.create();
+  create(scene){
+    super.create(scene);
     var moveVect = new Phaser.Math.Vector2(Phaser.Math.Between(-1,1),Phaser.Math.Between(-1,1));
-    this.sprite.applyForce({x:moveVect.x/20,y:moveVect.y/20});
+    this.applyForce({x:moveVect.x/20,y:moveVect.y/20});
+    this.anims.play('coin', true);
 
   }
   update(){
     super.update();
-    this.sprite.anims.play('coin', true);
+
   }
 }
