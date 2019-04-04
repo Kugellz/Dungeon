@@ -13,7 +13,7 @@ class BasePlayScene extends Phaser.Scene{
     this.cursors;
     console.log("ITS WORKING");
 
-    this.data = {
+    this.infoData = {
       coins:0,
       kills:0,
       time:0
@@ -22,6 +22,7 @@ class BasePlayScene extends Phaser.Scene{
   preload(){
     this.load.spritesheet('knight', 'assets/knight-2.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
+    this.load.spritesheet('dungeonKing', 'assets/DungeonKing.png',{ frameWidth: 48, frameHeight: 48 });
     this.load.spritesheet('coin', 'assets/coin.png',{ frameWidth: 16, frameHeight: 16 });
     this.load.image('ball','assets/ball.png');
     this.load.image('door','assets/Door.png');
@@ -79,6 +80,15 @@ class BasePlayScene extends Phaser.Scene{
         frameRate: 6,
         repeat: -1
     });
+
+    //boss
+    this.anims.create({
+        key: 'bossIdle',
+        frames: this.anims.generateFrameNumbers('dungeonKing', { start: 1, end: 6 }),
+        frameRate: 6,
+        repeat: -1
+    });
+
     this.anims.create({
         key: 'coin',
         frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 8 }),
@@ -120,6 +130,9 @@ class BasePlayScene extends Phaser.Scene{
         this.coins[i].update();
       }
     }
+    if (this.boss) {
+      this.boss.update();
+    }
     this.pipeline.setFloat1('uTime', this.pipeTick); //A tickrate that increases by 0.01 per frame. Could also use update's own time parameter.
     this.pipeTick += 0.01;
   }
@@ -151,15 +164,15 @@ class BasePlayScene extends Phaser.Scene{
         this.startFade();
       } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
         bodyA.gameObject.destroy();
-        this.data.coins++;
+        this.infoData.coins++;
         console.log("COIN GET");
       } else if (nameB == "Coin" && nameA == "Player") {
         bodyB.gameObject.destroy();
-        this.data.coins++;
+        this.infoData.coins++;
         console.log("COIN GET");
       }
 
-      if (nameA == "Ball" || nameB == "Ball" && nameA != "Player" && nameB != "Player" && nameA != "room" && nameB != "room" && nameA != "InvisDoor" && nameB != "InvisDoor") {
+      if ((nameA == "Ball" && nameB == "Enemy") || (nameB == "Ball" && nameA == "Enemy")) {
         var power = this.player.mace.maceVector.length();
         //.log(power);
         if("vibrate" in window.navigator && power > 5) {
@@ -217,6 +230,8 @@ class BasePlayScene extends Phaser.Scene{
   }
   startBossFight(){
     this.clearEnemies();
+    this.boss = new dunKing(this,this.dungeon.bossRoom.x,this.dungeon.bossRoom.y);
+    this.boss.create();
   }
 
   clearEnemies(){
@@ -233,7 +248,7 @@ class BasePlayScene extends Phaser.Scene{
         this.pipeline2 = this.game.renderer.addPipeline(this.shader2, new TemplateShader(this.game));
 
 
-        this.player.sprite.setPipeline(this.shader);
+        //this.player.sprite.setPipeline(this.shader);
         //this.cameras.main.setRenderToTexture(this.shader);
         this.miniCam.setRenderToTexture(this.shader2);
 

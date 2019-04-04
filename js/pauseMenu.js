@@ -18,7 +18,7 @@ class PauseMenu extends Phaser.Scene{
 
     var graphics = this.add.graphics({ fillStyle: { color: 0x00000 } });
     var rect = new Phaser.Geom.Rectangle(0, 0, 1000, 3000);
-    this.background = graphics.fillRectShape(rect).setAlpha(0);;
+    this.background = graphics.fillRectShape(rect).setAlpha(0);
     this.pausedText = this.add.text(this.game.config.width/2 - 46, 500, 'PAUSED', {
       fontSize:150,
       color:'#d9a066',
@@ -27,14 +27,20 @@ class PauseMenu extends Phaser.Scene{
     .setShadow(8, 8, "#663931", 2, false, true)
     .setAlpha(0);
 
-    this.coins = this.add.text(0,0,"HELLO WORLD",{
+
+    this.coins = this.add.text(this.game.config.width/2,50,"COINS:",{
       fontSize:50,
       color:'#d9a066',
-      //align:'centre'
-    }).setOrigin(0.5)
+      align:'left'
+    }).setOrigin(0,0.5)
     .setShadow(8, 8, "#663931", 2, false, true)
-    .setAlpha(0);
+    .setAlpha(1);
 
+    this.add.image(this.coins.x - 30,this.coins.y,"coin",null).setScale(2);
+  }
+  update(){
+
+    this.coins.text = this.mainScene.infoData.coins;
   }
   togglePause(){
     if (this.paused == false) {

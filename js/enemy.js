@@ -15,6 +15,7 @@ class Enemy{
 
     this.shadow = this.scene.add.image(x, y, 'shadow', null, null).setScale(5);
     this.shadow.depth = 1.1;
+    this.scene.miniCam.ignore([this.sprite,this.shadow]);
 
     this.XVEL = Phaser.Math.RND.pick([1,-1]);
     this.YVEL = Phaser.Math.RND.pick([1,-1]);
@@ -75,7 +76,7 @@ class Enemy{
     this.paused = false;
   }
   spawnCoins(){
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 3; i++) {
       //var coin = new Coin(this.sprite.x,this.sprite.y,this.scene);
       var coin = this.scene.coins.get();
       if (coin) {

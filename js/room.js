@@ -225,7 +225,7 @@ class BaseRoom {
       var enemy = new Enemy(this.scene, this.x + 100,this.y + 100,this);
       enemy.create();
       enemy.setPlayer();
-      this.scene.miniCam.ignore(enemy.sprite);
+      
       this.scene.enemies.push(enemy);
       this.enemies.push(enemy);
     }

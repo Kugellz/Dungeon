@@ -30,7 +30,8 @@ class Player {
     this.touchEnabled = true;
     //this.sprite.setCollisionCategory(this.spriteColCat)
 
-    this.mace = new Mace(this.sprite, 5, 1.2, 1.5);
+    //parent, length, scale, ballScale
+    this.mace = new Mace(this.sprite, 4, 1.4, 1.3);
     this.damageMultiplier = 5;
     //constructor(parent,length,scale,ballScale)
 
@@ -145,7 +146,7 @@ class Player {
 
     if (this.touchEnabled) {
       const tolerance = 25;
-      const reduceBy = 200;
+      const reduceBy = 150;
       if (distX > 0 + tolerance) {
         this.sprite.XVEL = distX / reduceBy;
       } else if (distX < 0 - tolerance) {
