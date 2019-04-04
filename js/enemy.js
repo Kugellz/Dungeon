@@ -10,11 +10,11 @@ class Enemy{
     .setAngle(0)
     .setMass(8)
     .setFrictionAir(0.1)
-    .depth = 1;
+    .depth = 1.1;
     this.sprite.body.label = 'Enemy';
 
     this.shadow = this.scene.add.image(x, y, 'shadow', null, null).setScale(5);
-    this.shadow.depth = 1.1;
+    this.shadow.depth = 1;
     this.scene.miniCam.ignore([this.sprite,this.shadow]);
 
     this.XVEL = Phaser.Math.RND.pick([1,-1]);

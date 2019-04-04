@@ -85,7 +85,13 @@ class BasePlayScene extends Phaser.Scene{
     this.anims.create({
         key: 'bossIdle',
         frames: this.anims.generateFrameNumbers('dungeonKing', { start: 1, end: 6 }),
-        frameRate: 6,
+        frameRate: 8,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'bossWalk',
+        frames: this.anims.generateFrameNumbers('dungeonKing', { start: 8, end: 11 }),
+        frameRate: 8,
         repeat: -1
     });
 
@@ -273,7 +279,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: false
+        debug: true
       }
     },
     scene: [MenuScene,BasePlayScene],
