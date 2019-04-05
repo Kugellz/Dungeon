@@ -96,6 +96,13 @@ class BasePlayScene extends Phaser.Scene{
     });
 
     this.anims.create({
+        key: 'bossRoar',
+        frames: this.anims.generateFrameNumbers('dungeonKing', { frames:[12,13,14,15,15,15,14,13] }),
+        frameRate: 4,
+        repeat: 0
+    });
+
+    this.anims.create({
         key: 'coin',
         frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 8 }),
         frameRate: 24,
@@ -143,50 +150,67 @@ class BasePlayScene extends Phaser.Scene{
     this.pipeTick += 0.01;
   }
 
-  Collision(event, bodyA, bodyB) {
-  //console.log(bodyA.label + ", " + bodyB.label);
-    if (bodyA && bodyB) {
+  Collision(event) {
+    var pairs = event.pairs;
+    for (var i = 0; i < pairs.length; i++)
+      {
+        var bodyA = pairs[i].bodyA;
+        var bodyB = pairs[i].bodyB;
 
-      var nameA = bodyA.label;
-      var nameB = bodyB.label;
-      if ((nameA == "Enemy" && nameB == "Ball")) {
-        //console.log("attempting damage from: " + nameB);
-        if (this.player) {
-          this.player.damage(bodyA.gameObject.parent);
-        }
-      } else if((nameA == "Ball" && nameB == "Enemy")){
-        //console.log("attempting damage from: " + nameB);
-        if (this.player) {
-          this.player.damage(bodyB.gameObject.parent);
-        }
+        if (bodyA && bodyB) {
+          //DO THE COLLISION CHECKS HEREEEE
+          var nameA = bodyA.label;
+          var nameB = bodyB.label;
 
-      } else if (nameA == "room" && nameB == "Player") {
-        //console.log("ROOM DETECT")
-        bodyA.parent.playerEntered();
-      } else if (nameB == "room" && nameA == "Player") {   //ROOOOMSSS
-        //console.log("ROOM DETECT")
-        bodyB.parent.playerEntered();
-      } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
-        this.startFade();
-      } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
-        bodyA.gameObject.destroy();
-        this.infoData.coins++;
-        console.log("COIN GET");
-      } else if (nameB == "Coin" && nameA == "Player") {
-        bodyB.gameObject.destroy();
-        this.infoData.coins++;
-        console.log("COIN GET");
+          //console.log(nameA + nameB);
+
+          if ((nameA == "Enemy" && nameB == "Ball")) {
+            //console.log("attempting damage from: " + nameB);
+            if (this.player) {
+              this.player.damage(bodyA.gameObject.parent);
+            }
+          } else if((nameA == "Ball" && nameB == "Enemy")){
+            //console.log("attempting damage from: " + nameB);
+            if (this.player) {
+              this.player.damage(bodyB.gameObject.parent);
+            }
+
+          } else if (nameA == "room" && nameB == "Player") {
+            //console.log("ROOM DETECT")
+            bodyA.parent.playerEntered();
+          } else if (nameB == "room" && nameA == "Player") {   //ROOOOMSSS
+            //console.log("ROOM DETECT")
+            bodyB.parent.playerEntered();
+          } else if(nameA == "Exit" && nameB == "Player" || nameB == "Exit" && nameA == "Player") {
+            this.startFade();
+          } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
+            bodyA.gameObject.destroy();
+            this.infoData.coins++;
+            console.log("COIN GET");
+          } else if (nameB == "Coin" && nameA == "Player") {
+            bodyB.gameObject.destroy();
+            this.infoData.coins++;
+            console.log("COIN GET");
+          }
+
+
+          if ((nameA == "Boss" && nameB == "Rectangle Body") || (nameB == "Boss" && nameA == "Rectangle Body")) {
+            this.boss.hitWall();
+          }
+
+          if ((nameA == "Ball" && nameB == "Enemy") || (nameB == "Ball" && nameA == "Enemy")) {
+            var power = this.player.mace.maceVector.length();
+            //.log(power);
+            if("vibrate" in window.navigator && power > 5) {
+              //console.log("VIBRATED");
+              window.navigator.vibrate([power*2,10,power]);
+            }
+          }
+        }
       }
 
-      if ((nameA == "Ball" && nameB == "Enemy") || (nameB == "Ball" && nameA == "Enemy")) {
-        var power = this.player.mace.maceVector.length();
-        //.log(power);
-        if("vibrate" in window.navigator && power > 5) {
-          //console.log("VIBRATED");
-          window.navigator.vibrate([power*2,10,power]);
-        }
-      }
-    }
+
+
 
 
 
@@ -220,6 +244,7 @@ class BasePlayScene extends Phaser.Scene{
       this.player.mace.head.setVelocity(0,0);
       this.player.changePlayerPos(this.dungeon.bossRoom.x,this.dungeon.bossRoom.y + 1000);
       this.cameras.main.centerOn(this.player.sprite.x,this.player.sprite.y);
+      this.cameras.main.setZoom(0.9);
       this.miniCam.setVisible(false);
       this.player.sprite.setVelocity(0,0);
       this.player.mace.head.setVelocity(0,0);
@@ -279,7 +304,7 @@ var config = {
           gravity: {
           y: 0
           },
-        debug: true
+        debug: false
       }
     },
     scene: [MenuScene,BasePlayScene],

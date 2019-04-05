@@ -128,7 +128,7 @@ class dungeon {
           config[3] = 0;
         }
         if (this.level[y][x] == 1) {
-          if (y==this.spawn.y/this.grid && x==this.spawn.x/this.grid) {
+          if (y==this.spawn.y/this.grid && x==this.spawn.x/this.grid || y==this.exit.y/this.grid && x==this.exit.x/this.grid) {
             enemies = 0;
           }
           this.createRoom(x * this.grid,y * this.grid,16,16,config,enemies);
