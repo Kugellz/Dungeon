@@ -8,6 +8,7 @@ class BasePlayScene extends Phaser.Scene{
     this.enemies = [];
     this.coins = [];
     this.paused = false;
+    this.gameOver = false;
     this.shader = 'warp';
     this.shader2 = 'Transparent';
     this.cursors;
@@ -24,6 +25,7 @@ class BasePlayScene extends Phaser.Scene{
     this.load.spritesheet('enemy', 'assets/Enemy.png',{ frameWidth: 24, frameHeight: 24 });
     this.load.spritesheet('dungeonKing', 'assets/DungeonKing.png',{ frameWidth: 48, frameHeight: 48 });
     this.load.spritesheet('coin', 'assets/coin.png',{ frameWidth: 16, frameHeight: 16 });
+    this.load.image('heart','assets/heart.png');
     this.load.image('ball','assets/ball.png');
     this.load.image('door','assets/Door.png');
     this.load.image('spikedBall','assets/spikeBall.png');
@@ -148,6 +150,9 @@ class BasePlayScene extends Phaser.Scene{
     }
     this.pipeline.setFloat1('uTime', this.pipeTick); //A tickrate that increases by 0.01 per frame. Could also use update's own time parameter.
     this.pipeTick += 0.01;
+    if (this.gameOver) {
+      this.gameOverGo();
+    }
   }
 
   Collision(event) {
@@ -157,23 +162,37 @@ class BasePlayScene extends Phaser.Scene{
         var bodyA = pairs[i].bodyA;
         var bodyB = pairs[i].bodyB;
 
-        if (bodyA && bodyB) {
+        if (bodyA && bodyB && !this.gameOver) {
           //DO THE COLLISION CHECKS HEREEEE
           var nameA = bodyA.label;
           var nameB = bodyB.label;
 
           //console.log(nameA + nameB);
 
-          if ((nameA == "Enemy" && nameB == "Ball")) {
+          if (((nameA == "Enemy" || nameA == "Boss") && nameB == "Ball")) {
             //console.log("attempting damage from: " + nameB);
             if (this.player) {
               this.player.damage(bodyA.gameObject.parent);
             }
-          } else if((nameA == "Ball" && nameB == "Enemy")){
+          } else if((nameA == "Ball" && (nameB == "Enemy" || nameB == "Boss"))){
             //console.log("attempting damage from: " + nameB);
             if (this.player) {
               this.player.damage(bodyB.gameObject.parent);
             }
+
+          } else if (((nameA == "Enemy" || nameA == "Boss") && nameB == "Player")) {
+              //console.log("attempting damage from: " + nameB);
+              if (this.player) {
+
+
+              }
+            } else if((nameA == "Player" && (nameB == "Enemy" || nameB == "Boss"))){
+              //console.log("attempting damage from: " + nameB);
+              if (this.player) {
+                if (this.player.health > 0) {
+                  this.player.health --;
+                }
+              }
 
           } else if (nameA == "room" && nameB == "Player") {
             //console.log("ROOM DETECT")
@@ -186,11 +205,11 @@ class BasePlayScene extends Phaser.Scene{
           } else if (nameA == "Coin" && nameB == "Player") {  //COINSSSSS
             bodyA.gameObject.destroy();
             this.infoData.coins++;
-            console.log("COIN GET");
+
           } else if (nameB == "Coin" && nameA == "Player") {
             bodyB.gameObject.destroy();
             this.infoData.coins++;
-            console.log("COIN GET");
+
           }
 
 
@@ -199,6 +218,14 @@ class BasePlayScene extends Phaser.Scene{
           }
 
           if ((nameA == "Ball" && nameB == "Enemy") || (nameB == "Ball" && nameA == "Enemy")) {
+            var power = this.player.mace.maceVector.length();
+            //.log(power);
+            if("vibrate" in window.navigator && power > 5) {
+              //console.log("VIBRATED");
+              window.navigator.vibrate([power*2,10,power]);
+            }
+          }
+          if ((nameA == "Ball" && nameB == "Boss") || (nameB == "Ball" && nameA == "Boss")) {
             var power = this.player.mace.maceVector.length();
             //.log(power);
             if("vibrate" in window.navigator && power > 5) {
@@ -232,6 +259,10 @@ class BasePlayScene extends Phaser.Scene{
     this.exit.body.label = "Exit";
   }
 
+  gameOverGo(){
+    console.log("GAMEOVER");
+  }
+
   startFade(){
     this.cameras.main.fadeOut(500,0,0,0,false);
     this.player.disableTouch();
@@ -244,7 +275,7 @@ class BasePlayScene extends Phaser.Scene{
       this.player.mace.head.setVelocity(0,0);
       this.player.changePlayerPos(this.dungeon.bossRoom.x,this.dungeon.bossRoom.y + 1000);
       this.cameras.main.centerOn(this.player.sprite.x,this.player.sprite.y);
-      this.cameras.main.setZoom(0.9);
+      this.cameras.main.setZoom(1);
       this.miniCam.setVisible(false);
       this.player.sprite.setVelocity(0,0);
       this.player.mace.head.setVelocity(0,0);

@@ -28,11 +28,13 @@ class Player {
 
     this.touching = false;
     this.touchEnabled = true;
-    //this.sprite.setCollisionCategory(this.spriteColCat)
 
+    //PLAYER INFO
+    this.maxHealth = 10;
+    this.health = this.maxHealth;
     //parent, length, scale, ballScale
     this.mace = new Mace(this.sprite, 4, 1.4, 1.3);
-    this.damageMultiplier = 5;
+    this.damageMultiplier = 2;
     //constructor(parent,length,scale,ballScale)
 
     //touchcontrols
@@ -84,6 +86,8 @@ class Player {
     }
     this.sprite.setVelocity(vector.x * this.sprite.speed, vector.y * this.sprite.speed);
     this.shadow.setPosition(this.sprite.x, this.sprite.y + 5);
+
+    this.checkHealth();
   }
   //touchHandlers-------------------------------------------------------
   handlePointerDown(pointer) {
@@ -167,11 +171,26 @@ class Player {
 
 
   //-----------------------------------------
+
   disableTouch() {
     this.touchEnabled = false;
   }
   enableTouch() {
     this.touchEnabled = true;
+  }
+
+  checkHealth(){
+    if (this.health <= 0) {
+      this.kill();
+    }
+  }
+
+  kill(){
+      console.log("D E A D");
+
+      //this.sprite.destroy;
+      this.scene.player = null;
+      this.scene.gameOver = true;
   }
 
   damage(object) {

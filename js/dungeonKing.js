@@ -2,6 +2,7 @@ class dunKing {
   constructor(scene, x, y) {
     this.scene = scene;
     this.sprite = this.sprite = this.scene.matter.add.sprite(x, y, 'dungeonKing', null, null).setScale(5);
+    this.sprite.parent = this;
     this.target = this.scene.player.sprite;
     this.mode = 1;
     this.running = false;
@@ -43,8 +44,11 @@ class dunKing {
     this.shadow = this.scene.add.image(x, y, 'shadow', null, null).setScale(12);
     this.shadow.depth = 1;
 
+    //KING INFO
     this.chargeSpeed = 40;
     this.walkSpeed = 6;
+    this.maxHealth = 500;
+    this.health = this.maxHealth;
 
     this.graphics = this.scene.add.graphics({
       lineStyle: {
@@ -57,6 +61,7 @@ class dunKing {
         alpha: 0.5
       }
     });
+    this.graphics.depth = 10;
 
   }
   create() {
@@ -186,6 +191,8 @@ class dunKing {
     this.velocity = new Phaser.Math.Vector2(this.sprite.body.velocity.x, this.sprite.body.velocity.y);
 
     this.shadow.setPosition(this.sprite.x, this.sprite.y + 80);
+
+    this.checkHealth();
   }
 
   switch2() {
@@ -203,6 +210,32 @@ class dunKing {
     }
 
 
+  }
+  checkHealth() {
+    if (this.health < 0) {
+      this.kill();
+    }
+  }
+
+  spawnCoins(num){
+    for (var i = 0; i < num; i++) {
+      //var coin = new Coin(this.sprite.x,this.sprite.y,this.scene);
+      var coin = this.scene.coins.get();
+      if (coin) {
+        coin.create(this.scene);
+        coin.move(this.sprite.x,this.sprite.y);
+        //this.scene.coins.push(coin);
+      }
+
+    }
+  }
+
+  kill(){
+    this.spawnCoins(25);
+    this.graphics.clear();
+    this.scene.boss = null;
+    this.sprite.destroy();
+    this.shadow.destroy();
   }
 
 }

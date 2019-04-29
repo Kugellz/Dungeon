@@ -24,7 +24,7 @@ class Enemy{
     this.originRoom = origin;
     this.paused = false;
     //HEALTH
-    this.maxHealth = 100;
+    this.maxHealth = 200;
     this.health = this.maxHealth;
 
   }
@@ -75,8 +75,8 @@ class Enemy{
   unPause(){
     this.paused = false;
   }
-  spawnCoins(){
-    for (var i = 0; i < 3; i++) {
+  spawnCoins(num){
+    for (var i = 0; i < num; i++) {
       //var coin = new Coin(this.sprite.x,this.sprite.y,this.scene);
       var coin = this.scene.coins.get();
       if (coin) {
@@ -88,7 +88,7 @@ class Enemy{
     }
   }
   kill(){
-    this.spawnCoins();
+    this.spawnCoins(3);
     Phaser.Utils.Array.Remove(this.scene.enemies,this);
     Phaser.Utils.Array.Remove(this.originRoom.enemies,this);
     this.originRoom.checkEnemyCount();

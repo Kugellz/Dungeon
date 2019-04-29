@@ -95,8 +95,8 @@ class dungeon {
         //console.log(this.level);
         //console.log(headX + ", " + headY + ", " + headDir);
         this.level[headY][headX] = 1;
-
-          if (i == 4 && j == 0 ) {
+        //NEEDS TO BE 4,7 TO WORK PROPER
+          if (i == 4 && j == 7  ) {
               this.exit.x = headX * this.grid;
               this.exit.y = headY * this.grid;
           }
